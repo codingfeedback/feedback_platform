@@ -1,0 +1,710 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Creative Feedback Platform Demo</title>
+    <style>
+        :root {
+            --bg: #f2ede3;
+            --panel: rgba(255, 252, 245, 0.82);
+            --ink: #1f1d1a;
+            --muted: #6b6357;
+            --accent: #cb5c35;
+            --accent-dark: #9f3d1e;
+            --line: rgba(31, 29, 26, 0.12);
+            --success: #1c7c54;
+            --shadow: 0 18px 50px rgba(78, 53, 24, 0.14);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: "Avenir Next", "Pretendard", "Segoe UI", sans-serif;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at top left, rgba(203, 92, 53, 0.18), transparent 28%),
+                radial-gradient(circle at top right, rgba(33, 104, 105, 0.16), transparent 24%),
+                linear-gradient(180deg, #f7f1e7 0%, #efe5d6 100%);
+        }
+
+        .shell {
+            width: min(1240px, calc(100% - 32px));
+            margin: 24px auto 48px;
+        }
+
+        .hero {
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 28px;
+            background: linear-gradient(135deg, rgba(255, 250, 242, 0.92), rgba(248, 239, 226, 0.8));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(12px);
+        }
+
+        .eyebrow {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 999px;
+            background: rgba(31, 29, 26, 0.06);
+            color: var(--muted);
+            font-size: 12px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 14px 0 12px;
+            font-size: clamp(32px, 5vw, 56px);
+            line-height: 0.95;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 14px;
+            margin-top: 24px;
+        }
+
+        .stat {
+            padding: 16px 18px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.6);
+            border: 1px solid var(--line);
+        }
+
+        .stat .label {
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .stat .value {
+            display: block;
+            margin-top: 6px;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.2fr) minmax(360px, 0.8fr);
+            gap: 20px;
+            margin-top: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+        }
+
+        .panel-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 20px 22px 0;
+        }
+
+        .panel-head h2, .panel-head h3 {
+            margin: 0;
+            font-size: 20px;
+            letter-spacing: -0.03em;
+        }
+
+        .muted {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .feed {
+            padding: 8px 18px 18px;
+        }
+
+        .work-card {
+            padding: 18px;
+            margin-top: 14px;
+            border-radius: 22px;
+            border: 1px solid var(--line);
+            background: rgba(255, 251, 247, 0.9);
+        }
+
+        .work-meta, .chip-row, .comment-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .work-title {
+            margin: 12px 0 8px;
+            font-size: 24px;
+            letter-spacing: -0.03em;
+        }
+
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 10px;
+            border-radius: 999px;
+            background: rgba(203, 92, 53, 0.08);
+            color: var(--accent-dark);
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .intent {
+            margin: 12px 0;
+            padding-left: 14px;
+            border-left: 3px solid rgba(203, 92, 53, 0.24);
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .asset-link {
+            display: inline-flex;
+            margin-top: 6px;
+            color: #215b77;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .comment-list {
+            margin-top: 14px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .comment {
+            padding: 12px 14px;
+            border-radius: 16px;
+            background: rgba(31, 29, 26, 0.04);
+        }
+
+        .comment p {
+            margin: 8px 0 0;
+            line-height: 1.5;
+        }
+
+        .form-stack {
+            padding: 8px 18px 18px;
+            display: grid;
+            gap: 14px;
+        }
+
+        .form-card {
+            padding: 18px;
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            background: rgba(255, 250, 244, 0.92);
+        }
+
+        .form-card h3 {
+            margin: 0 0 6px;
+            font-size: 18px;
+        }
+
+        form {
+            display: grid;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        label {
+            display: grid;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--muted);
+        }
+
+        input, select, textarea, button {
+            width: 100%;
+            font: inherit;
+        }
+
+        input, select, textarea {
+            padding: 12px 14px;
+            border-radius: 14px;
+            border: 1px solid rgba(31, 29, 26, 0.14);
+            background: white;
+            color: var(--ink);
+        }
+
+        textarea {
+            min-height: 92px;
+            resize: vertical;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+        }
+
+        button {
+            border: 0;
+            border-radius: 14px;
+            padding: 12px 16px;
+            background: var(--accent);
+            color: white;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.18s ease, background 0.18s ease;
+        }
+
+        button.secondary {
+            background: #225f66;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            background: var(--accent-dark);
+        }
+
+        #status {
+            margin-top: 16px;
+            padding: 14px 16px;
+            border-radius: 16px;
+            background: rgba(28, 124, 84, 0.1);
+            border: 1px solid rgba(28, 124, 84, 0.18);
+            color: var(--success);
+            min-height: 52px;
+            white-space: pre-wrap;
+            line-height: 1.5;
+        }
+
+        .empty {
+            padding: 22px;
+            border-radius: 20px;
+            border: 1px dashed var(--line);
+            color: var(--muted);
+            text-align: center;
+            margin-top: 14px;
+        }
+
+        @media (max-width: 980px) {
+            .stats, .layout, .grid-2 { grid-template-columns: 1fr; }
+            .shell { width: min(100% - 20px, 1240px); }
+        }
+    </style>
+</head>
+<body>
+    <main class="shell">
+        <section class="hero">
+            <span class="eyebrow">Internal demo surface</span>
+            <h1>Creative Feedback Platform</h1>
+            <p>작품 업로드, 반익명 피드백, 신고 흐름을 한 페이지에서 빠르게 검증하는 데모 화면입니다. 우측 폼에서 데이터를 만들고 좌측 피드에서 즉시 반영되는지 확인하면 됩니다.</p>
+            <div class="stats">
+                <article class="stat"><span class="label">Users</span><strong class="value" id="userCount">0</strong></article>
+                <article class="stat"><span class="label">Works</span><strong class="value" id="workCount">0</strong></article>
+                <article class="stat"><span class="label">Comments</span><strong class="value" id="commentCount">0</strong></article>
+                <article class="stat"><span class="label">Reports</span><strong class="value" id="reportCount">0</strong></article>
+            </div>
+        </section>
+
+        <section class="layout">
+            <section class="panel">
+                <div class="panel-head">
+                    <div>
+                        <h2>Live Feed</h2>
+                        <p class="muted">최근 작품과 댓글 상태를 바로 확인합니다.</p>
+                    </div>
+                    <button class="secondary" type="button" id="refreshButton">새로고침</button>
+                </div>
+                <div class="feed" id="feed"></div>
+            </section>
+
+            <section class="panel">
+                <div class="panel-head">
+                    <div>
+                        <h2>Demo Controls</h2>
+                        <p class="muted">실사용 흐름을 최소 조작으로 테스트합니다.</p>
+                    </div>
+                </div>
+                <div class="form-stack">
+                    <section class="form-card">
+                        <h3>1. 사용자 생성</h3>
+                        <p class="muted">창작자와 피드백 참여자를 반익명 프로필로 만듭니다.</p>
+                        <form id="userForm">
+                            <div class="grid-2">
+                                <label>Username<input name="username" required placeholder="creator1"></label>
+                                <label>Email<input name="email" type="email" placeholder="creator1@example.com"></label>
+                            </div>
+                            <div class="grid-2">
+                                <label>Public Handle<input name="public_handle" placeholder="mood-editor"></label>
+                                <label>Password<input name="password" type="password" required value="testpass1234"></label>
+                            </div>
+                            <div class="grid-2">
+                                <label>Gender
+                                    <select name="gender">
+                                        <option value="undisclosed">Undisclosed</option>
+                                        <option value="female">Female</option>
+                                        <option value="male">Male</option>
+                                        <option value="non_binary">Non-binary</option>
+                                    </select>
+                                </label>
+                                <label>Country Code<input name="country_code" value="KR" maxlength="2"></label>
+                            </div>
+                            <div class="grid-2">
+                                <label>Age Group
+                                    <select name="age_group">
+                                        <option value="10s">10s</option>
+                                        <option value="20s" selected>20s</option>
+                                        <option value="30s">30s</option>
+                                        <option value="40s">40s</option>
+                                        <option value="50s">50s</option>
+                                        <option value="60s">60s</option>
+                                    </select>
+                                </label>
+                                <label>Auth Provider
+                                    <select name="auth_provider">
+                                        <option value="email">Email</option>
+                                        <option value="apple">Apple</option>
+                                        <option value="admin">Admin</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <label>Bio<textarea name="bio" placeholder="감정 전달력을 테스트하고 싶습니다."></textarea></label>
+                            <button type="submit">사용자 만들기</button>
+                        </form>
+                    </section>
+
+                    <section class="form-card">
+                        <h3>2. 작품 생성</h3>
+                        <p class="muted">작품 의도와 에셋 URL을 등록합니다.</p>
+                        <form id="workForm">
+                            <div class="grid-2">
+                                <label>Creator<select name="creator_id" id="creatorSelect" required></select></label>
+                                <label>Media Type
+                                    <select name="media_type">
+                                        <option value="image">Image</option>
+                                        <option value="video" selected>Video</option>
+                                        <option value="audio">Audio</option>
+                                        <option value="illustration">Illustration</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <div class="grid-2">
+                                <label>Title<input name="title" required placeholder="첫 단편 영상"></label>
+                                <label>Summary<input name="summary" placeholder="긴장감 전달 테스트"></label>
+                            </div>
+                            <div class="grid-2">
+                                <label>Status
+                                    <select name="status">
+                                        <option value="draft">Draft</option>
+                                        <option value="published" selected>Published</option>
+                                        <option value="archived">Archived</option>
+                                    </select>
+                                </label>
+                                <label>Visibility
+                                    <select name="visibility">
+                                        <option value="public" selected>Public</option>
+                                        <option value="unlisted">Unlisted</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <label>Creator Intent<textarea name="creator_intent" required placeholder="의도한 감정이 전달되는지 알고 싶습니다."></textarea></label>
+                            <div class="grid-2">
+                                <label>Asset URL<input name="asset_url" type="url" required placeholder="https://example.com/work.mp4"></label>
+                                <label>Thumbnail URL<input name="thumbnail_url" type="url" placeholder="https://example.com/thumb.jpg"></label>
+                            </div>
+                            <div class="grid-2">
+                                <label>MIME Type<input name="mime_type" placeholder="video/mp4"></label>
+                                <label>Duration Seconds<input name="duration_seconds" type="number" min="0" placeholder="95"></label>
+                            </div>
+                            <button type="submit">작품 올리기</button>
+                        </form>
+                    </section>
+
+                    <section class="form-card">
+                        <h3>3. 댓글 작성</h3>
+                        <p class="muted">다른 사용자 관점에서 정성적 피드백을 남깁니다.</p>
+                        <form id="commentForm">
+                            <div class="grid-2">
+                                <label>Work<select name="work_id" id="commentWorkSelect" required></select></label>
+                                <label>Author<select name="author_id" id="commentAuthorSelect" required></select></label>
+                            </div>
+                            <label>Focus Area
+                                <select name="focus_area">
+                                    <option value="overall">Overall</option>
+                                    <option value="story">Story</option>
+                                    <option value="visual">Visual</option>
+                                    <option value="sound">Sound</option>
+                                    <option value="editing">Editing</option>
+                                    <option value="emotion">Emotion</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </label>
+                            <label>Comment<textarea name="body" required placeholder="첫 인상은 강하지만 결말 전환이 조금 급해 보입니다."></textarea></label>
+                            <button type="submit">댓글 남기기</button>
+                        </form>
+                    </section>
+
+                    <section class="form-card">
+                        <h3>4. 신고 생성</h3>
+                        <p class="muted">작품, 댓글, 사용자 중 하나를 선택해 운영 흐름을 점검합니다.</p>
+                        <form id="reportForm">
+                            <div class="grid-2">
+                                <label>Reporter<select name="reporter_id" id="reporterSelect" required></select></label>
+                                <label>Reason
+                                    <select name="reason">
+                                        <option value="abuse">Abuse</option>
+                                        <option value="spam">Spam</option>
+                                        <option value="hate">Hate</option>
+                                        <option value="copyright">Copyright</option>
+                                        <option value="adult">Adult</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <label>Target Type
+                                <select name="target_type" id="targetTypeSelect">
+                                    <option value="comment" selected>Comment</option>
+                                    <option value="work">Work</option>
+                                    <option value="user">User</option>
+                                </select>
+                            </label>
+                            <label>Target<select name="target_id" id="targetSelect" required></select></label>
+                            <label>Description<textarea name="description" placeholder="신고 사유를 간단히 적습니다."></textarea></label>
+                            <button type="submit">신고 보내기</button>
+                        </form>
+                    </section>
+
+                    <div id="status">데이터를 불러오는 중입니다.</div>
+                </div>
+            </section>
+        </section>
+    </main>
+
+    <script>
+        const state = { users: [], works: [], comments: [], reports: [] };
+        const endpoints = { users: "/api/users/", works: "/api/works/", comments: "/api/comments/", reports: "/api/reports/" };
+
+        function setStatus(message, isError = false) {
+            const status = document.getElementById("status");
+            status.textContent = message;
+            status.style.color = isError ? "#8d2d17" : "var(--success)";
+            status.style.background = isError ? "rgba(184, 76, 37, 0.12)" : "rgba(28, 124, 84, 0.1)";
+            status.style.borderColor = isError ? "rgba(184, 76, 37, 0.24)" : "rgba(28, 124, 84, 0.18)";
+        }
+
+        async function apiFetch(url, options = {}) {
+            const response = await fetch(url, {
+                headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+                ...options,
+            });
+            const text = await response.text();
+            const payload = text ? JSON.parse(text) : null;
+            if (!response.ok) {
+                throw new Error(JSON.stringify(payload, null, 2));
+            }
+            return payload;
+        }
+
+        async function loadCollection(name) {
+            const payload = await apiFetch(endpoints[name]);
+            state[name] = payload.results || payload;
+        }
+
+        async function refreshData(message = "데이터를 새로 불러왔습니다.") {
+            try {
+                await Promise.all([loadCollection("users"), loadCollection("works"), loadCollection("comments"), loadCollection("reports")]);
+                renderAll();
+                setStatus(message);
+            } catch (error) {
+                setStatus(`데이터 로드 실패\n${error.message}`, true);
+            }
+        }
+
+        function optionMarkup(items, labelBuilder, emptyLabel) {
+            if (!items.length) {
+                return `<option value="">${emptyLabel}</option>`;
+            }
+            return items.map((item) => `<option value="${item.id}">${labelBuilder(item)}</option>`).join("");
+        }
+
+        function renderStats() {
+            document.getElementById("userCount").textContent = state.users.length;
+            document.getElementById("workCount").textContent = state.works.length;
+            document.getElementById("commentCount").textContent = state.comments.length;
+            document.getElementById("reportCount").textContent = state.reports.length;
+        }
+
+        function renderSelects() {
+            const userLabel = (user) => `${user.id}. ${user.public_handle} · ${user.country_code} · ${user.age_group}`;
+            const workLabel = (work) => `${work.id}. ${work.title}`;
+            const commentLabel = (comment) => `${comment.id}. ${comment.author?.public_handle || "unknown"} → ${comment.body.slice(0, 36)}`;
+
+            document.getElementById("creatorSelect").innerHTML = optionMarkup(state.users, userLabel, "사용자를 먼저 만드세요");
+            document.getElementById("commentAuthorSelect").innerHTML = optionMarkup(state.users, userLabel, "사용자를 먼저 만드세요");
+            document.getElementById("reporterSelect").innerHTML = optionMarkup(state.users, userLabel, "사용자를 먼저 만드세요");
+            document.getElementById("commentWorkSelect").innerHTML = optionMarkup(state.works, workLabel, "작품을 먼저 만드세요");
+
+            const targetType = document.getElementById("targetTypeSelect").value;
+            const targetSelect = document.getElementById("targetSelect");
+            if (targetType === "work") {
+                targetSelect.innerHTML = optionMarkup(state.works, workLabel, "작품이 없습니다");
+            } else if (targetType === "user") {
+                targetSelect.innerHTML = optionMarkup(state.users, userLabel, "사용자가 없습니다");
+            } else {
+                targetSelect.innerHTML = optionMarkup(state.comments, commentLabel, "댓글이 없습니다");
+            }
+        }
+
+        function renderFeed() {
+            const feed = document.getElementById("feed");
+            if (!state.works.length) {
+                feed.innerHTML = '<div class="empty">아직 작품이 없습니다. 오른쪽에서 사용자와 작품을 먼저 생성하세요.</div>';
+                return;
+            }
+
+            feed.innerHTML = state.works.map((work) => {
+                const comments = state.comments.filter((comment) => Number(comment.work) === work.id);
+                const asset = work.assets?.[0];
+                const commentMarkup = comments.length
+                    ? comments.map((comment) => `
+                        <article class="comment">
+                            <div class="comment-meta">
+                                <span class="chip">${comment.focus_area}</span>
+                                <strong>${comment.author?.public_handle || "anonymous"}</strong>
+                            </div>
+                            <p>${comment.body}</p>
+                        </article>
+                    `).join("")
+                    : '<div class="empty">아직 피드백이 없습니다.</div>';
+
+                return `
+                    <article class="work-card">
+                        <div class="work-meta">
+                            <span class="chip">${work.media_type}</span>
+                            <span class="chip">${work.status}</span>
+                            <span class="chip">${work.visibility}</span>
+                        </div>
+                        <h3 class="work-title">${work.title}</h3>
+                        <div class="chip-row">
+                            <span>${work.creator?.public_handle || "unknown"}</span>
+                            <span class="muted">${work.creator?.country_code || "--"} · ${work.creator?.age_group || "--"}</span>
+                        </div>
+                        ${work.summary ? `<p>${work.summary}</p>` : ""}
+                        <div class="intent">${work.creator_intent}</div>
+                        ${asset?.asset_url ? `<a class="asset-link" href="${asset.asset_url}" target="_blank" rel="noreferrer">등록된 에셋 열기</a>` : ""}
+                        <div class="comment-list">${commentMarkup}</div>
+                    </article>
+                `;
+            }).join("");
+        }
+
+        function renderAll() { renderStats(); renderSelects(); renderFeed(); }
+        function formToObject(form) { return Object.fromEntries(new FormData(form).entries()); }
+
+        async function submitJson(url, payload, successMessage) {
+            await apiFetch(url, { method: "POST", body: JSON.stringify(payload) });
+            await refreshData(successMessage);
+        }
+
+        document.getElementById("userForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const data = formToObject(form);
+            if (!data.email) delete data.email;
+            if (!data.public_handle) delete data.public_handle;
+            try {
+                await submitJson(endpoints.users, data, "사용자를 생성했습니다.");
+                form.reset();
+                form.password.value = "testpass1234";
+                form.country_code.value = "KR";
+                form.age_group.value = "20s";
+                form.gender.value = "undisclosed";
+                form.auth_provider.value = "email";
+            } catch (error) {
+                setStatus(`사용자 생성 실패\n${error.message}`, true);
+            }
+        });
+
+        document.getElementById("workForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const data = formToObject(form);
+            const payload = {
+                creator_id: Number(data.creator_id),
+                title: data.title,
+                summary: data.summary,
+                creator_intent: data.creator_intent,
+                media_type: data.media_type,
+                visibility: data.visibility,
+                status: data.status,
+                assets: [{
+                    asset_url: data.asset_url,
+                    thumbnail_url: data.thumbnail_url,
+                    mime_type: data.mime_type,
+                    duration_seconds: data.duration_seconds ? Number(data.duration_seconds) : null,
+                    sort_order: 0,
+                }],
+            };
+            try {
+                await submitJson(endpoints.works, payload, "작품을 생성했습니다.");
+                form.reset();
+                form.visibility.value = "public";
+                form.status.value = "published";
+                form.media_type.value = "video";
+            } catch (error) {
+                setStatus(`작품 생성 실패\n${error.message}`, true);
+            }
+        });
+
+        document.getElementById("commentForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const data = formToObject(form);
+            const payload = { work_id: Number(data.work_id), author_id: Number(data.author_id), body: data.body, focus_area: data.focus_area };
+            try {
+                await submitJson(endpoints.comments, payload, "댓글을 생성했습니다.");
+                form.reset();
+                form.focus_area.value = "overall";
+            } catch (error) {
+                setStatus(`댓글 생성 실패\n${error.message}`, true);
+            }
+        });
+
+        document.getElementById("reportForm").addEventListener("submit", async (event) => {
+            event.preventDefault();
+            const form = event.currentTarget;
+            const data = formToObject(form);
+            const payload = { reporter_id: Number(data.reporter_id), reason: data.reason, description: data.description };
+            if (data.target_type === "work") payload.work_id = Number(data.target_id);
+            else if (data.target_type === "user") payload.reported_user_id = Number(data.target_id);
+            else payload.comment_id = Number(data.target_id);
+            try {
+                await submitJson(endpoints.reports, payload, "신고를 생성했습니다.");
+                form.reset();
+                document.getElementById("targetTypeSelect").value = "comment";
+                renderSelects();
+            } catch (error) {
+                setStatus(`신고 생성 실패\n${error.message}`, true);
+            }
+        });
+
+        document.getElementById("targetTypeSelect").addEventListener("change", renderSelects);
+        document.getElementById("refreshButton").addEventListener("click", () => refreshData());
+        refreshData("데모 화면이 준비되었습니다.");
+    </script>
+</body>
+</html>
