@@ -1,4 +1,8 @@
-﻿from django.views.generic import TemplateView
+from django.views.generic import TemplateView
+
+
+class LoginView(TemplateView):
+    template_name = "demo/login.html"
 
 
 class AppPrototypeView(TemplateView):

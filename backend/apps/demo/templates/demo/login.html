@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>Feedback Loop Login</title>
+    <style>
+        :root {
+            --bg: #f5f7fb;
+            --surface: rgba(255, 255, 255, 0.82);
+            --surface-strong: rgba(255, 255, 255, 0.94);
+            --line: rgba(16, 24, 40, 0.12);
+            --ink: #101828;
+            --muted: #667085;
+            --blue: #0071e3;
+            --yellow: #fee500;
+            --green: #03c75a;
+            --shadow: 0 24px 70px rgba(16, 24, 40, 0.14);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            color: var(--ink);
+            background:
+                radial-gradient(circle at 20% 8%, rgba(0, 113, 227, 0.12), transparent 30%),
+                radial-gradient(circle at 88% 20%, rgba(3, 199, 90, 0.1), transparent 24%),
+                linear-gradient(180deg, #fbfcff, var(--bg));
+            font-family: "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Pretendard", sans-serif;
+        }
+
+        .phone {
+            width: min(430px, calc(100vw - 16px));
+            min-height: min(860px, calc(100vh - 16px));
+            position: relative;
+            overflow: hidden;
+            border-radius: 36px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(247, 249, 252, 0.9));
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(24px);
+        }
+
+        .notch {
+            width: 138px;
+            height: 28px;
+            margin: 0 auto;
+            border-radius: 0 0 18px 18px;
+            background: rgba(17, 24, 39, 0.92);
+        }
+
+        .content {
+            display: flex;
+            min-height: calc(min(860px, 100vh - 16px) - 28px);
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 34px 22px 24px;
+        }
+
+        .brand {
+            margin-top: 30px;
+        }
+
+        .eyebrow {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 10px 0 12px;
+            font-size: 44px;
+            line-height: 1;
+            letter-spacing: 0;
+        }
+
+        .copy {
+            margin: 0;
+            color: var(--muted);
+            font-size: 16px;
+            line-height: 1.58;
+        }
+
+        .panel {
+            padding: 16px;
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: var(--surface);
+            box-shadow: 0 16px 42px rgba(16, 24, 40, 0.1);
+            backdrop-filter: blur(20px);
+        }
+
+        .panel-title {
+            margin: 0 0 12px;
+            font-size: 18px;
+            letter-spacing: 0;
+        }
+
+        .login-list {
+            display: grid;
+            gap: 10px;
+        }
+
+        .login-button {
+            display: grid;
+            grid-template-columns: 34px 1fr 20px;
+            gap: 10px;
+            align-items: center;
+            min-height: 56px;
+            padding: 10px 12px;
+            border-radius: 16px;
+            border: 1px solid var(--line);
+            color: var(--ink);
+            background: var(--surface-strong);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .mark {
+            width: 34px;
+            height: 34px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            font-weight: 800;
+        }
+
+        .google .mark {
+            color: #4285f4;
+            background: #fff;
+            border: 1px solid var(--line);
+        }
+
+        .kakao .mark {
+            color: #000;
+            background: var(--yellow);
+        }
+
+        .naver .mark {
+            color: #fff;
+            background: var(--green);
+        }
+
+        .chevron {
+            color: #98a2b3;
+            font-size: 22px;
+            line-height: 1;
+        }
+
+        .secondary {
+            display: inline-flex;
+            width: 100%;
+            justify-content: center;
+            margin-top: 12px;
+            padding: 13px 16px;
+            border-radius: 16px;
+            color: var(--blue);
+            background: rgba(0, 113, 227, 0.08);
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .note {
+            margin: 14px 2px 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+    <main class="phone">
+        <div class="notch"></div>
+        <section class="content">
+            <header class="brand">
+                <div class="eyebrow">Creative feedback</div>
+                <h1>Feedback Loop</h1>
+                <p class="copy">작품을 올리고, 다양한 관점의 피드백을 받아 의도에 더 가까운 결과물로 다듬어갑니다.</p>
+            </header>
+
+            <section class="panel">
+                <h2 class="panel-title">소셜 계정으로 시작하기</h2>
+                <div class="login-list">
+                    <a class="login-button google" href="/accounts/google/login/?process=login">
+                        <span class="mark">G</span>
+                        <span>Google로 계속하기</span>
+                        <span class="chevron">›</span>
+                    </a>
+                    <a class="login-button kakao" href="/accounts/kakao/login/?process=login">
+                        <span class="mark">K</span>
+                        <span>KakaoTalk으로 계속하기</span>
+                        <span class="chevron">›</span>
+                    </a>
+                    <a class="login-button naver" href="/accounts/naver/login/?process=login">
+                        <span class="mark">N</span>
+                        <span>Naver로 계속하기</span>
+                        <span class="chevron">›</span>
+                    </a>
+                </div>
+                <a class="secondary" href="/app/">데모 화면 먼저 보기</a>
+                <p class="note">OAuth 로그인은 각 제공자의 개발자 콘솔에서 redirect URI와 client id/secret을 등록한 뒤 활성화됩니다.</p>
+            </section>
+        </section>
+    </main>
+</body>
+</html>
