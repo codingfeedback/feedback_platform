@@ -6,21 +6,20 @@
     <title>Feedback Loop</title>
     <style>
         :root {
-            --bg-top: #f8fafc;
-            --bg-bottom: #eef2f7;
-            --glass: rgba(255, 255, 255, 0.72);
-            --glass-strong: rgba(255, 255, 255, 0.88);
-            --line: rgba(15, 23, 42, 0.08);
-            --line-strong: rgba(15, 23, 42, 0.14);
+            --bg: #f5f7fb;
+            --surface: rgba(255, 255, 255, 0.86);
+            --surface-strong: #ffffff;
             --ink: #101828;
             --muted: #667085;
             --muted-soft: #98a2b3;
-            --accent: #0071e3;
-            --accent-soft: rgba(0, 113, 227, 0.12);
-            --success: #027a48;
-            --danger: #b42318;
-            --shadow: 0 24px 64px rgba(15, 23, 42, 0.14);
-            --card-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            --line: rgba(16, 24, 40, 0.12);
+            --blue: #0071e3;
+            --blue-soft: rgba(0, 113, 227, 0.12);
+            --green: #027a48;
+            --orange: #b54708;
+            --red: #b42318;
+            --shadow: 0 24px 70px rgba(16, 24, 40, 0.14);
+            --card-shadow: 0 12px 30px rgba(16, 24, 40, 0.08);
         }
 
         * {
@@ -28,7 +27,7 @@
         }
 
         html {
-            background: linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+            background: var(--bg);
         }
 
         body {
@@ -37,12 +36,23 @@
             display: grid;
             place-items: center;
             padding: 18px;
-            font-family: "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Pretendard", sans-serif;
             color: var(--ink);
             background:
-                radial-gradient(circle at top left, rgba(0, 113, 227, 0.12), transparent 30%),
-                radial-gradient(circle at 85% 16%, rgba(52, 211, 153, 0.12), transparent 22%),
-                linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+                radial-gradient(circle at 16% 8%, rgba(0, 113, 227, 0.16), transparent 30%),
+                radial-gradient(circle at 88% 18%, rgba(52, 211, 153, 0.12), transparent 24%),
+                linear-gradient(180deg, #fbfcff, var(--bg));
+            font-family: "SF Pro Display", "SF Pro Text", "Helvetica Neue", "Pretendard", sans-serif;
+        }
+
+        button,
+        input,
+        select,
+        textarea {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
         }
 
         .phone {
@@ -51,9 +61,8 @@
             position: relative;
             overflow: hidden;
             border-radius: 36px;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(248, 250, 252, 0.9));
+            border: 1px solid rgba(255, 255, 255, 0.9);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.92));
             box-shadow: var(--shadow);
             backdrop-filter: blur(24px);
         }
@@ -63,63 +72,118 @@
             position: absolute;
             inset: 0;
             background:
-                radial-gradient(circle at 20% 0%, rgba(0, 113, 227, 0.08), transparent 28%),
-                radial-gradient(circle at 100% 12%, rgba(125, 211, 252, 0.1), transparent 20%);
+                radial-gradient(circle at 18% 0%, rgba(0, 113, 227, 0.08), transparent 28%),
+                radial-gradient(circle at 100% 12%, rgba(125, 211, 252, 0.10), transparent 22%);
             pointer-events: none;
         }
 
         .notch {
             width: 138px;
             height: 28px;
-            margin: 0 auto 6px;
+            margin: 0 auto 4px;
             border-radius: 0 0 18px 18px;
-            background: rgba(17, 24, 39, 0.9);
+            background: rgba(17, 24, 39, 0.92);
+        }
+
+        .top,
+        .screen,
+        .tabbar {
+            position: relative;
+            z-index: 1;
         }
 
         .top {
-            position: relative;
-            padding: 12px 18px 14px;
+            padding: 12px 18px 10px;
+        }
+
+        .status-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 12px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0;
+        }
+
+        .identity {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            align-items: end;
+            gap: 12px;
         }
 
         .eyebrow {
-            font-size: 11px;
-            font-weight: 600;
-            letter-spacing: 0.12em;
+            margin: 0 0 6px;
             color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 0;
             text-transform: uppercase;
         }
 
         h1 {
-            margin: 8px 0 8px;
-            font-size: 35px;
-            line-height: 0.95;
-            letter-spacing: -0.06em;
-        }
-
-        .sub {
             margin: 0;
+            font-size: 34px;
+            line-height: 1.02;
+            letter-spacing: 0;
+        }
+
+        .user-switcher {
+            display: grid;
+            gap: 6px;
+            min-width: 148px;
+        }
+
+        .user-switcher label {
             color: var(--muted);
-            font-size: 14px;
-            line-height: 1.55;
+            font-size: 11px;
+            font-weight: 800;
         }
 
-        .body {
-            height: calc(100% - 86px);
-            overflow: auto;
-            padding: 4px 14px 108px;
+        select,
+        input,
+        textarea {
+            width: 100%;
+            border: 1px solid var(--line);
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            color: var(--ink);
+            outline: none;
         }
 
-        .body::-webkit-scrollbar {
-            width: 0;
-            height: 0;
+        select,
+        input {
+            min-height: 40px;
+            padding: 0 12px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
+            padding: 12px;
+            line-height: 1.5;
         }
 
         .screen {
-            display: none;
-            animation: rise 0.24s ease;
+            height: calc(min(920px, 100vh - 16px) - 162px);
+            overflow-y: auto;
+            padding: 0 18px 96px;
+            scrollbar-width: none;
         }
 
-        .screen.active {
+        .screen::-webkit-scrollbar {
+            display: none;
+        }
+
+        .section {
+            display: none;
+            animation: rise 220ms ease both;
+        }
+
+        .section.active {
             display: block;
         }
 
@@ -134,1147 +198,1088 @@
             }
         }
 
-        .hero-card,
-        .card,
-        .item,
-        .status {
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            background: var(--glass);
-            backdrop-filter: blur(22px);
+        .hero {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 14px;
+            padding: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.96);
+            border-radius: 16px;
+            background:
+                linear-gradient(135deg, rgba(0, 113, 227, 0.14), rgba(255, 255, 255, 0.88)),
+                var(--surface);
             box-shadow: var(--card-shadow);
         }
 
-        .hero-card {
-            padding: 18px;
-            border-radius: 28px;
-            margin-bottom: 14px;
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.92), rgba(246, 250, 255, 0.8));
+        .hero strong {
+            font-size: 18px;
         }
 
-        .card {
-            padding: 16px;
-            border-radius: 24px;
-            margin-bottom: 12px;
-        }
-
-        .item {
-            padding: 14px;
-            border-radius: 20px;
-            background: var(--glass-strong);
-        }
-
-        .row {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-
-        .between {
-            justify-content: space-between;
-        }
-
-        .section-title,
-        .title {
+        .hero p {
             margin: 0;
-            font-size: 22px;
-            letter-spacing: -0.04em;
-        }
-
-        .section-copy,
-        .muted {
             color: var(--muted);
-            font-size: 13px;
-            line-height: 1.55;
+            line-height: 1.5;
         }
 
-        .section-copy {
-            margin: 6px 0 0;
-        }
-
-        .hero-grid {
+        .stats {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 10px;
-            margin-top: 16px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
         }
 
-        .metric {
-            padding: 12px;
-            border-radius: 20px;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.86);
+        .stat {
+            padding: 10px 8px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.76);
+            border: 1px solid rgba(255, 255, 255, 0.9);
         }
 
-        .metric-label {
+        .stat b {
             display: block;
-            color: var(--muted-soft);
-            font-size: 12px;
+            font-size: 18px;
         }
 
-        .metric strong {
-            display: block;
-            margin-top: 6px;
-            font-size: 27px;
-            letter-spacing: -0.04em;
-        }
-
-        .hero-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 16px;
-        }
-
-        .hero-actions button,
-        .hero-actions a {
-            flex: 1;
-        }
-
-        .pill {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 7px 11px;
-            border-radius: 999px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            font-size: 12px;
+        .stat span {
+            color: var(--muted);
+            font-size: 11px;
             font-weight: 700;
         }
 
-        .pill.teal {
-            color: #0f766e;
-            background: rgba(15, 118, 110, 0.1);
-        }
-
-        .pill.ghost {
-            color: var(--muted);
-            background: rgba(15, 23, 42, 0.04);
-        }
-
-        .featured {
-            margin-top: 14px;
-            padding: 18px;
-            border-radius: 22px;
-            background:
-                linear-gradient(180deg, rgba(255, 255, 255, 0.94), rgba(248, 250, 252, 0.86));
-            border: 1px solid var(--line);
-        }
-
-        .featured-title {
-            margin: 10px 0 8px;
-            font-size: 28px;
-            line-height: 1;
-            letter-spacing: -0.05em;
-        }
-
-        .featured-summary {
-            margin: 0;
-            color: var(--muted);
-            line-height: 1.55;
-        }
-
-        .intent {
-            margin-top: 14px;
-            padding: 14px 0 0;
-            border-top: 1px solid var(--line);
-            color: var(--muted);
-            line-height: 1.62;
-        }
-
-        .list {
-            display: grid;
-            gap: 10px;
-            margin-top: 12px;
-        }
-
-        .list-row {
+        .toolbar {
             display: flex;
+            gap: 8px;
             align-items: center;
             justify-content: space-between;
-            gap: 12px;
+            margin-bottom: 12px;
         }
 
-        .chevron {
-            color: var(--muted-soft);
-            font-size: 18px;
-            line-height: 1;
-        }
-
-        .comment-copy {
-            margin: 8px 0 0;
-            font-size: 14px;
-            line-height: 1.58;
-        }
-
-        .empty {
-            padding: 18px;
-            border-radius: 20px;
-            border: 1px dashed var(--line-strong);
-            color: var(--muted);
-            font-size: 14px;
-            text-align: center;
-            background: rgba(255, 255, 255, 0.55);
-        }
-
-        form {
-            display: grid;
-            gap: 12px;
-            margin-top: 14px;
-        }
-
-        .group-title {
-            margin: 0 0 4px;
-            font-size: 18px;
-            letter-spacing: -0.03em;
-        }
-
-        .field-group {
-            overflow: hidden;
-            border-radius: 20px;
-            border: 1px solid var(--line);
-            background: rgba(255, 255, 255, 0.78);
-        }
-
-        .field-row {
-            padding: 0 14px;
-            border-bottom: 1px solid var(--line);
-        }
-
-        .field-row:last-child {
-            border-bottom: 0;
-        }
-
-        label {
-            display: grid;
+        .segments {
+            display: flex;
             gap: 6px;
+            padding: 4px;
+            border-radius: 14px;
+            background: rgba(16, 24, 40, 0.06);
+        }
+
+        .segment {
+            min-height: 32px;
+            padding: 0 10px;
+            border: 0;
+            border-radius: 10px;
+            background: transparent;
             color: var(--muted);
             font-size: 12px;
-            padding: 12px 0;
+            font-weight: 800;
         }
 
-        .g2 {
+        .segment.active {
+            background: #fff;
+            color: var(--ink);
+            box-shadow: 0 6px 16px rgba(16, 24, 40, 0.08);
+        }
+
+        .primary,
+        .secondary,
+        .ghost {
+            min-height: 42px;
+            border: 0;
+            border-radius: 12px;
+            padding: 0 14px;
+            font-weight: 800;
+        }
+
+        .primary {
+            color: #fff;
+            background: var(--blue);
+            box-shadow: 0 12px 24px rgba(0, 113, 227, 0.22);
+        }
+
+        .secondary {
+            color: var(--blue);
+            background: var(--blue-soft);
+        }
+
+        .ghost {
+            color: var(--muted);
+            background: rgba(16, 24, 40, 0.06);
+        }
+
+        .grid-two {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
         }
 
-        input,
-        select,
-        textarea,
-        button {
+        .feed-list,
+        .stack {
+            display: grid;
+            gap: 10px;
+        }
+
+        .work-row,
+        .panel,
+        .comment,
+        .person {
+            border: 1px solid rgba(255, 255, 255, 0.92);
+            border-radius: 16px;
+            background: var(--surface);
+            box-shadow: 0 10px 24px rgba(16, 24, 40, 0.07);
+            backdrop-filter: blur(18px);
+        }
+
+        .work-row {
             width: 100%;
-            font: inherit;
+            display: grid;
+            gap: 10px;
+            padding: 14px;
+            text-align: left;
         }
 
-        input,
-        select,
-        textarea {
-            padding: 0;
-            border: 0;
-            outline: 0;
-            background: transparent;
-            color: var(--ink);
-            font-size: 15px;
+        .work-row.active {
+            border-color: rgba(0, 113, 227, 0.42);
+            box-shadow: 0 14px 30px rgba(0, 113, 227, 0.14);
         }
 
-        textarea {
-            min-height: 92px;
-            resize: vertical;
-            padding-top: 2px;
+        .row-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
         }
 
-        input::placeholder,
-        textarea::placeholder {
-            color: var(--muted-soft);
+        .creator {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            min-width: 0;
         }
 
-        button,
-        .button-link {
+        .avatar {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            flex: 0 0 auto;
+            border-radius: 50%;
+            color: #fff;
+            background: linear-gradient(135deg, #111827, #475467);
+            font-weight: 900;
+        }
+
+        .creator b,
+        .person b {
+            display: block;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .creator span,
+        .meta,
+        .muted {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.45;
+        }
+
+        .chip {
             display: inline-flex;
             align-items: center;
-            justify-content: center;
-            border: 0;
-            cursor: pointer;
-            text-decoration: none;
-            border-radius: 18px;
-            padding: 13px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            min-height: 26px;
+            padding: 0 9px;
+            border-radius: 999px;
+            background: rgba(16, 24, 40, 0.06);
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 800;
+            white-space: nowrap;
         }
 
-        button:hover,
-        .button-link:hover {
-            transform: translateY(-1px);
+        .chip.blue {
+            background: var(--blue-soft);
+            color: var(--blue);
         }
 
-        .primary {
-            color: white;
-            background: linear-gradient(180deg, #1485ff, #0071e3);
-            box-shadow: 0 10px 20px rgba(0, 113, 227, 0.22);
+        .chip.green {
+            background: rgba(2, 122, 72, 0.10);
+            color: var(--green);
         }
 
-        .secondary {
-            color: var(--ink);
-            background: rgba(255, 255, 255, 0.88);
-            border: 1px solid var(--line);
+        .chip.orange {
+            background: rgba(181, 71, 8, 0.10);
+            color: var(--orange);
         }
 
-        .ghost-button {
-            color: var(--ink);
-            background: rgba(15, 23, 42, 0.04);
+        .title {
+            margin: 0;
+            font-size: 18px;
+            line-height: 1.25;
         }
 
-        .status {
-            padding: 14px 16px;
-            border-radius: 20px;
-            color: var(--success);
-            background: rgba(236, 253, 243, 0.9);
-            border-color: rgba(6, 95, 70, 0.1);
-            line-height: 1.55;
-            white-space: pre-wrap;
-            margin-top: 8px;
+        .summary {
+            margin: 0;
+            color: var(--muted);
+            line-height: 1.52;
+        }
+
+        .metrics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+        }
+
+        .panel {
+            padding: 14px;
+            margin-top: 12px;
+        }
+
+        .panel h2,
+        .panel h3 {
+            margin: 0 0 10px;
+            letter-spacing: 0;
+        }
+
+        .panel h2 {
+            font-size: 22px;
+        }
+
+        .panel h3 {
+            font-size: 16px;
+        }
+
+        .form {
+            display: grid;
+            gap: 10px;
+        }
+
+        .field {
+            display: grid;
+            gap: 6px;
+        }
+
+        .field label {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .comment {
+            padding: 12px;
+        }
+
+        .comment p {
+            margin: 8px 0 0;
+            line-height: 1.52;
+        }
+
+        .empty {
+            padding: 18px;
+            border: 1px dashed var(--line);
+            border-radius: 14px;
+            color: var(--muted);
+            background: rgba(255, 255, 255, 0.5);
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        .person {
+            display: grid;
+            grid-template-columns: 38px 1fr auto;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+        }
+
+        .person.active {
+            border-color: rgba(0, 113, 227, 0.42);
+        }
+
+        .notice {
+            margin: 10px 0 0;
+            color: var(--green);
+            font-size: 12px;
+            font-weight: 800;
+            min-height: 18px;
         }
 
         .tabbar {
             position: absolute;
             left: 14px;
             right: 14px;
-            bottom: 12px;
+            bottom: 14px;
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 8px;
-            padding: 10px;
-            border-radius: 26px;
-            border: 1px solid rgba(255, 255, 255, 0.9);
-            background: rgba(255, 255, 255, 0.84);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 14px 34px rgba(15, 23, 42, 0.12);
+            gap: 7px;
+            padding: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.88);
+            border-radius: 24px;
+            background: rgba(255, 255, 255, 0.82);
+            box-shadow: 0 16px 36px rgba(16, 24, 40, 0.14);
+            backdrop-filter: blur(22px);
         }
 
-        .tabbar button {
-            padding: 10px 6px;
+        .tab {
+            min-height: 48px;
+            display: grid;
+            place-items: center;
+            gap: 2px;
+            border: 0;
             border-radius: 16px;
-            color: var(--muted);
             background: transparent;
-            box-shadow: none;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 900;
         }
 
-        .tabbar button.active {
-            color: var(--accent);
-            background: rgba(0, 113, 227, 0.08);
+        .tab span {
+            font-size: 18px;
+            line-height: 1;
         }
 
-        .toolbar {
-            display: flex;
-            gap: 10px;
-            align-items: center;
+        .tab.active {
+            color: var(--blue);
+            background: var(--blue-soft);
         }
 
-        a.inline-link {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 700;
-        }
+        @media (max-width: 390px) {
+            body {
+                padding: 0;
+            }
 
-        @media (max-width: 380px) {
-            .g2,
-            .hero-grid {
+            .phone {
+                width: 100vw;
+                min-height: 100vh;
+                border-radius: 0;
+            }
+
+            .screen {
+                height: calc(100vh - 162px);
+            }
+
+            .identity {
                 grid-template-columns: 1fr;
+                align-items: start;
             }
         }
     </style>
 </head>
 <body>
-    <main class="phone">
+    <main class="phone" aria-label="Feedback Loop 앱 데모">
         <div class="notch"></div>
         <header class="top">
-            <div class="eyebrow">iOS app prototype</div>
-            <h1>Feedback Loop</h1>
-            <p class="sub">Apple 스타일의 위계와 재질감을 기준으로 재구성한 모바일 사용자 흐름 프로토타입입니다.</p>
+            <div class="status-row">
+                <span>Demo Community</span>
+                <a class="muted" href="/ops/">Ops API</a>
+            </div>
+            <div class="identity">
+                <div>
+                    <p class="eyebrow">Creative Feedback</p>
+                    <h1>Feedback Loop</h1>
+                </div>
+                <div class="user-switcher">
+                    <label for="activeUser">현재 사용자</label>
+                    <select id="activeUser"></select>
+                </div>
+            </div>
         </header>
 
-        <section class="body">
-            <section class="screen active" data-screen="feed">
-                <article class="hero-card">
-                    <div class="row between">
-                        <div>
-                            <div class="eyebrow">Quick start</div>
-                            <h2 class="section-title">앱 흐름을 바로 확인해보세요</h2>
-                            <p class="section-copy">샘플 데이터를 한 번에 생성해서 작품 피드, 댓글, 신고 플로우까지 바로 살펴볼 수 있습니다.</p>
-                        </div>
+        <div class="screen">
+            <section class="section active" data-section="feed">
+                <div class="hero">
+                    <div>
+                        <strong>여러 사람이 올린 작품을 한 피드에서 봅니다.</strong>
+                        <p>상단의 현재 사용자를 바꾸면 업로드, 댓글, 신고가 그 사람 이름으로 기록됩니다.</p>
                     </div>
-                    <div class="hero-grid">
-                        <article class="metric">
-                            <span class="metric-label">Users</span>
-                            <strong id="uc">0</strong>
-                        </article>
-                        <article class="metric">
-                            <span class="metric-label">Works</span>
-                            <strong id="wc">0</strong>
-                        </article>
-                        <article class="metric">
-                            <span class="metric-label">Comments</span>
-                            <strong id="cc">0</strong>
-                        </article>
-                        <article class="metric">
-                            <span class="metric-label">Reports</span>
-                            <strong id="rc">0</strong>
-                        </article>
-                    </div>
-                    <div class="hero-actions">
-                        <button class="primary" id="seed" type="button">샘플 생성</button>
-                        <a class="button-link secondary" href="/ops/">운영 데모</a>
-                    </div>
-                </article>
+                    <div class="stats" id="stats"></div>
+                    <button class="primary" id="seedCommunity" type="button">커뮤니티 샘플 채우기</button>
+                </div>
 
-                <article class="card">
-                    <div class="toolbar between">
-                        <div>
-                            <h2 class="section-title">Featured Work</h2>
-                            <p class="section-copy">최신 작품을 중심으로 콘텐츠와 피드백을 봅니다.</p>
-                        </div>
-                        <select id="workSel"></select>
+                <div class="toolbar">
+                    <div class="segments" aria-label="피드 필터">
+                        <button class="segment active" type="button" data-mode="all">전체</button>
+                        <button class="segment" type="button" data-mode="latest">최신</button>
+                        <button class="segment" type="button" data-mode="mine">내 작품</button>
                     </div>
-                    <div id="featured" class="featured"></div>
-                </article>
+                    <button class="secondary" id="refresh" type="button">새로고침</button>
+                </div>
 
-                <article class="card">
-                    <div class="toolbar between">
-                        <div>
-                            <h2 class="section-title">빠른 피드백</h2>
-                            <p class="section-copy">현재 작품에 리뷰어 관점의 댓글을 바로 남깁니다.</p>
-                        </div>
-                    </div>
-                    <form id="commentForm">
-                        <div class="field-group">
-                            <div class="field-row">
-                                <label>
-                                    작성자
-                                    <select name="author_id" id="commentAuthor"></select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    포커스
-                                    <select name="focus_area">
-                                        <option value="overall">Overall</option>
-                                        <option value="story">Story</option>
-                                        <option value="visual">Visual</option>
-                                        <option value="sound">Sound</option>
-                                        <option value="editing">Editing</option>
-                                        <option value="emotion">Emotion</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    댓글
-                                    <textarea name="body" placeholder="의도한 감정이 충분히 전달되는지, 리듬이 자연스러운지 적어보세요."></textarea>
-                                </label>
-                            </div>
-                        </div>
-                        <button class="primary" type="submit">댓글 남기기</button>
-                    </form>
-                </article>
+                <div class="feed-list" id="feedList"></div>
+                <article class="panel" id="workDetail"></article>
             </section>
 
-            <section class="screen" data-screen="compose">
-                <article class="card">
-                    <h2 class="section-title">프로필 만들기</h2>
-                    <p class="section-copy">반익명 프로필을 생성해 앱 안에서 창작자 또는 리뷰어 역할을 시작합니다.</p>
-                    <form id="userForm">
-                        <div class="g2">
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Username
-                                        <input name="username" required placeholder="creator1">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Email
-                                        <input name="email" type="email" placeholder="creator1@example.com">
-                                    </label>
-                                </div>
+            <section class="section" data-section="upload">
+                <div class="panel">
+                    <h2>작품 올리기</h2>
+                    <p class="muted">현재 사용자로 공개 작품을 등록합니다. 실제 파일 업로드 전 단계라 URL 기반 자산으로 저장합니다.</p>
+                    <form class="form" id="workForm">
+                        <div class="field">
+                            <label for="workTitle">작품명</label>
+                            <input id="workTitle" name="title" value="새 영상 러프컷" required>
+                        </div>
+                        <div class="field">
+                            <label for="workSummary">짧은 설명</label>
+                            <input id="workSummary" name="summary" value="감정선과 리듬이 의도대로 전달되는지 궁금합니다.">
+                        </div>
+                        <div class="field">
+                            <label for="workIntent">제작 의도</label>
+                            <textarea id="workIntent" name="creator_intent" required>처음 보는 사람도 마지막 장면에서 여운을 느끼는지 확인하고 싶습니다.</textarea>
+                        </div>
+                        <div class="grid-two">
+                            <div class="field">
+                                <label for="workMedia">미디어</label>
+                                <select id="workMedia" name="media_type">
+                                    <option value="video">영상</option>
+                                    <option value="image">이미지</option>
+                                    <option value="audio">오디오</option>
+                                    <option value="illustration">그림</option>
+                                    <option value="other">기타</option>
+                                </select>
                             </div>
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Handle
-                                        <input name="public_handle" placeholder="mood-editor">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Password
-                                        <input name="password" type="password" value="testpass1234" required>
-                                    </label>
-                                </div>
+                            <div class="field">
+                                <label for="assetUrl">자산 URL</label>
+                                <input id="assetUrl" name="asset_url" type="url" value="https://example.com/demo-work.mp4">
                             </div>
                         </div>
-                        <div class="g2">
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Gender
-                                        <select name="gender">
-                                            <option value="undisclosed">Undisclosed</option>
-                                            <option value="female">Female</option>
-                                            <option value="male">Male</option>
-                                            <option value="non_binary">Non-binary</option>
-                                        </select>
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Age
-                                        <select name="age_group">
-                                            <option value="10s">10s</option>
-                                            <option value="20s" selected>20s</option>
-                                            <option value="30s">30s</option>
-                                            <option value="40s">40s</option>
-                                            <option value="50s">50s</option>
-                                            <option value="60s">60s</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Country
-                                        <input name="country_code" value="KR" maxlength="2">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Provider
-                                        <select name="auth_provider">
-                                            <option value="email">Email</option>
-                                            <option value="apple">Apple</option>
-                                            <option value="admin">Admin</option>
-                                        </select>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="field-group">
-                            <div class="field-row">
-                                <label>
-                                    Bio
-                                    <textarea name="bio" placeholder="영상, 이미지, 오디오 작업을 올리고 싶습니다."></textarea>
-                                </label>
-                            </div>
-                        </div>
-                        <button class="primary" type="submit">프로필 생성</button>
+                        <button class="primary" type="submit">현재 사용자로 등록</button>
                     </form>
-                </article>
+                    <p class="notice" id="workNotice"></p>
+                </div>
 
-                <article class="card">
-                    <h2 class="section-title">작품 업로드</h2>
-                    <p class="section-copy">콘텐츠와 제작 의도를 등록해 피드백을 받을 준비를 합니다.</p>
-                    <form id="workForm">
-                        <div class="g2">
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Creator
-                                        <select name="creator_id" id="creatorSel"></select>
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Media
-                                        <select name="media_type">
-                                            <option value="image">Image</option>
-                                            <option value="video" selected>Video</option>
-                                            <option value="audio">Audio</option>
-                                            <option value="illustration">Illustration</option>
-                                            <option value="other">Other</option>
-                                        </select>
-                                    </label>
-                                </div>
+                <div class="panel">
+                    <h3>새 페르소나 만들기</h3>
+                    <form class="form" id="userForm">
+                        <div class="grid-two">
+                            <div class="field">
+                                <label for="handle">닉네임</label>
+                                <input id="handle" name="public_handle" value="creator-new" maxlength="24" required>
                             </div>
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Title
-                                        <input name="title" required placeholder="첫 단편 영상">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Summary
-                                        <input name="summary" placeholder="긴장감 전달 테스트">
-                                    </label>
-                                </div>
+                            <div class="field">
+                                <label for="ageGroup">연령대</label>
+                                <select id="ageGroup" name="age_group">
+                                    <option value="10s">10대</option>
+                                    <option value="20s" selected>20대</option>
+                                    <option value="30s">30대</option>
+                                    <option value="40s">40대</option>
+                                    <option value="50s">50대</option>
+                                    <option value="60s">60대</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="field-group">
-                            <div class="field-row">
-                                <label>
-                                    Intent
-                                    <textarea name="creator_intent" required placeholder="내가 의도한 감정이 불안과 몰입으로 읽히는지 알고 싶다."></textarea>
-                                </label>
+                        <div class="grid-two">
+                            <div class="field">
+                                <label for="country">국가</label>
+                                <input id="country" name="country_code" value="KR" maxlength="2">
+                            </div>
+                            <div class="field">
+                                <label for="gender">성별</label>
+                                <select id="gender" name="gender">
+                                    <option value="undisclosed">미공개</option>
+                                    <option value="female">여성</option>
+                                    <option value="male">남성</option>
+                                    <option value="non_binary">논바이너리</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="g2">
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        Asset URL
-                                        <input name="asset_url" type="url" required placeholder="https://example.com/work.mp4">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Thumbnail URL
-                                        <input name="thumbnail_url" type="url" placeholder="https://example.com/thumb.jpg">
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="field-group">
-                                <div class="field-row">
-                                    <label>
-                                        MIME
-                                        <input name="mime_type" placeholder="video/mp4">
-                                    </label>
-                                </div>
-                                <div class="field-row">
-                                    <label>
-                                        Duration
-                                        <input name="duration_seconds" type="number" min="0" placeholder="95">
-                                    </label>
-                                </div>
-                            </div>
+                        <div class="field">
+                            <label for="bio">관심사</label>
+                            <input id="bio" name="bio" value="영상 리듬과 감정 피드백에 관심이 있습니다.">
                         </div>
-                        <button class="primary" type="submit">작품 게시</button>
+                        <button class="secondary" type="submit">사용자 추가 후 전환</button>
                     </form>
-                </article>
+                    <p class="notice" id="userNotice"></p>
+                </div>
             </section>
 
-            <section class="screen" data-screen="activity">
-                <article class="card">
-                    <div class="toolbar between">
-                        <div>
-                            <h2 class="section-title">신고하기</h2>
-                            <p class="section-copy">콘텐츠 안전 흐름을 실제 제품처럼 검증합니다.</p>
+            <section class="section" data-section="activity">
+                <div class="panel">
+                    <h2>피드백 활동</h2>
+                    <p class="muted">작품을 선택한 뒤 현재 사용자로 댓글을 남기거나 신고 흐름을 테스트합니다.</p>
+                    <form class="form" id="reportForm">
+                        <div class="field">
+                            <label for="reportReason">선택 작품 신고 사유</label>
+                            <select id="reportReason" name="reason">
+                                <option value="spam">스팸</option>
+                                <option value="abuse">괴롭힘</option>
+                                <option value="hate">혐오</option>
+                                <option value="copyright">저작권</option>
+                                <option value="adult">성인물</option>
+                                <option value="other">기타</option>
+                            </select>
                         </div>
-                        <button class="ghost-button" id="refresh" type="button">새로고침</button>
-                    </div>
-                    <form id="reportForm">
-                        <div class="field-group">
-                            <div class="field-row">
-                                <label>
-                                    Reporter
-                                    <select name="reporter_id" id="reporterSel"></select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    Reason
-                                    <select name="reason">
-                                        <option value="abuse">Abuse</option>
-                                        <option value="spam">Spam</option>
-                                        <option value="hate">Hate</option>
-                                        <option value="copyright">Copyright</option>
-                                        <option value="adult">Adult</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    대상 종류
-                                    <select name="target_type" id="targetType">
-                                        <option value="comment">Comment</option>
-                                        <option value="work">Work</option>
-                                        <option value="user">User</option>
-                                    </select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    대상
-                                    <select name="target_id" id="targetSel"></select>
-                                </label>
-                            </div>
-                            <div class="field-row">
-                                <label>
-                                    설명
-                                    <textarea name="description" placeholder="운영자가 바로 이해할 수 있게 사유를 적습니다."></textarea>
-                                </label>
-                            </div>
+                        <div class="field">
+                            <label for="reportDescription">운영자에게 남길 메모</label>
+                            <textarea id="reportDescription" name="description">데모 신고 플로우 확인용입니다.</textarea>
                         </div>
-                        <button class="primary" type="submit">신고 전송</button>
+                        <button class="secondary" type="submit">현재 사용자로 신고 생성</button>
                     </form>
-                </article>
-
-                <article class="card">
-                    <h2 class="section-title">최근 활동</h2>
-                    <p class="section-copy">댓글과 신고 현황을 제품형 리스트로 확인합니다.</p>
-                    <div id="activityList" class="list"></div>
-                </article>
+                    <p class="notice" id="reportNotice"></p>
+                </div>
+                <div class="panel">
+                    <h3>최근 댓글</h3>
+                    <div class="stack" id="activityList"></div>
+                </div>
             </section>
 
-            <section class="screen" data-screen="profile">
-                <article class="card">
-                    <div class="toolbar between">
-                        <div>
-                            <h2 class="section-title">현재 프로필</h2>
-                            <p class="section-copy">앱 내 사용자 컨텍스트를 바꿔가며 흐름을 확인합니다.</p>
-                        </div>
-                        <select id="activeUser"></select>
-                    </div>
-                    <div id="activeProfile" class="list"></div>
-                </article>
-
-                <article class="card">
-                    <h2 class="section-title">커뮤니티 멤버</h2>
-                    <p class="section-copy">반익명 프로필이 리스트 안에서 어떻게 보이는지 확인합니다.</p>
-                    <div id="userList" class="list"></div>
-                </article>
+            <section class="section" data-section="profile">
+                <div class="panel" id="profilePanel"></div>
+                <div class="panel">
+                    <h3>커뮤니티 사용자</h3>
+                    <div class="stack" id="peopleList"></div>
+                </div>
             </section>
+        </div>
 
-            <div class="status" id="status">앱 상태를 불러오는 중입니다.</div>
-        </section>
-
-        <nav class="tabbar">
-            <button class="active" data-tab="feed" type="button">Feed</button>
-            <button data-tab="compose" type="button">Upload</button>
-            <button data-tab="activity" type="button">Activity</button>
-            <button data-tab="profile" type="button">Profile</button>
+        <nav class="tabbar" aria-label="앱 탭">
+            <button class="tab active" type="button" data-tab="feed"><span>⌂</span>피드</button>
+            <button class="tab" type="button" data-tab="upload"><span>＋</span>등록</button>
+            <button class="tab" type="button" data-tab="activity"><span>◌</span>활동</button>
+            <button class="tab" type="button" data-tab="profile"><span>◇</span>프로필</button>
         </nav>
     </main>
 
     <script>
-        const s = { users: [], works: [], comments: [], reports: [], tab: "feed", wid: null, uid: null };
-        const e = { users: "/api/users/", works: "/api/works/", comments: "/api/comments/", reports: "/api/reports/" };
+        const api = {
+            users: "/api/users/",
+            works: "/api/works/",
+            comments: "/api/comments/",
+            reports: "/api/reports/",
+        };
 
-        const $ = (id) => document.getElementById(id);
+        const state = {
+            users: [],
+            works: [],
+            comments: [],
+            reports: [],
+            activeUserId: null,
+            selectedWorkId: null,
+            section: "feed",
+            feedMode: "all",
+        };
 
-        const opt = (items, label, empty) => (
-            items.length
-                ? items.map((i) => `<option value="${i.id}">${label(i)}</option>`).join("")
-                : `<option value="">${empty}</option>`
-        );
+        const $ = (selector) => document.querySelector(selector);
+        const $$ = (selector) => [...document.querySelectorAll(selector)];
 
-        const ulabel = (u) => `${u.public_handle} · ${u.country_code} · ${u.age_group}`;
+        const labels = {
+            image: "이미지",
+            video: "영상",
+            audio: "오디오",
+            illustration: "그림",
+            other: "기타",
+            overall: "전체",
+            story: "스토리",
+            visual: "비주얼",
+            sound: "사운드",
+            editing: "편집",
+            emotion: "감정",
+        };
 
-        function status(msg, err = false) {
-            const el = $("status");
-            el.textContent = msg;
-            el.style.color = err ? "var(--danger)" : "var(--success)";
-            el.style.background = err ? "rgba(254, 242, 242, 0.92)" : "rgba(236, 253, 243, 0.9)";
-            el.style.borderColor = err ? "rgba(180, 35, 24, 0.12)" : "rgba(2, 122, 72, 0.12)";
+        function unwrap(payload) {
+            return Array.isArray(payload) ? payload : payload.results || [];
         }
 
-        async function api(url, o = {}) {
-            const r = await fetch(url, {
-                headers: { "Content-Type": "application/json", ...(o.headers || {}) },
-                ...o,
+        async function request(url, options = {}) {
+            const response = await fetch(url, {
+                headers: {
+                    "Content-Type": "application/json",
+                    ...(options.headers || {}),
+                },
+                ...options,
             });
-            const t = await r.text();
-            const p = t ? JSON.parse(t) : null;
-            if (!r.ok) {
-                throw new Error(JSON.stringify(p, null, 2));
+            if (!response.ok) {
+                const text = await response.text();
+                throw new Error(text || `${response.status} ${response.statusText}`);
             }
-            return p;
+            return response.json();
         }
 
-        async function load(name) {
-            const p = await api(e[name]);
-            s[name] = p.results || p;
+        function activeUser() {
+            return state.users.find((user) => user.id === Number(state.activeUserId)) || state.users[0] || null;
         }
 
-        async function refresh(msg = "데이터를 동기화했습니다.") {
-            try {
-                await Promise.all([load("users"), load("works"), load("comments"), load("reports")]);
-                if (!s.wid && s.works[0]) {
-                    s.wid = s.works[0].id;
-                }
-                if (!s.uid && s.users[0]) {
-                    s.uid = s.users[0].id;
-                }
-                render();
-                status(msg);
-            } catch (err) {
-                status(`로드 실패\n${err.message}`, true);
+        function selectedWork() {
+            return state.works.find((work) => work.id === Number(state.selectedWorkId)) || state.works[0] || null;
+        }
+
+        function commentsFor(workId) {
+            return state.comments.filter((comment) => comment.work === workId && comment.status === "active");
+        }
+
+        function personaMeta(user) {
+            if (!user) return "게스트";
+            return `${user.country_code || "KR"} · ${user.age_group || "20s"} · ${genderLabel(user.gender)}`;
+        }
+
+        function genderLabel(value) {
+            return {
+                undisclosed: "성별 미공개",
+                female: "여성",
+                male: "남성",
+                non_binary: "논바이너리",
+            }[value] || "성별 미공개";
+        }
+
+        function initial(user) {
+            return (user?.public_handle || "?").slice(0, 1).toUpperCase();
+        }
+
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replaceAll("&", "&amp;")
+                .replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll('"', "&quot;")
+                .replaceAll("'", "&#039;");
+        }
+
+        async function loadAll() {
+            const [users, works, comments, reports] = await Promise.all([
+                request(api.users).then(unwrap),
+                request(`${api.works}?visibility=public&status=published`).then(unwrap),
+                request(api.comments).then(unwrap),
+                request(api.reports).then(unwrap),
+            ]);
+
+            state.users = users;
+            state.works = works;
+            state.comments = comments;
+            state.reports = reports;
+
+            if (!state.activeUserId && users.length) state.activeUserId = users[0].id;
+            if (!state.selectedWorkId && works.length) state.selectedWorkId = works[0].id;
+            if (state.selectedWorkId && !works.some((work) => work.id === Number(state.selectedWorkId))) {
+                state.selectedWorkId = works[0]?.id || null;
             }
+            render();
         }
 
-        function renderTabs() {
-            document.querySelectorAll("[data-tab]").forEach((b) => b.classList.toggle("active", b.dataset.tab === s.tab));
-            document.querySelectorAll(".screen").forEach((v) => v.classList.toggle("active", v.dataset.screen === s.tab));
-        }
-
-        function renderSelects() {
-            $("creatorSel").innerHTML = opt(s.users, ulabel, "사용자를 먼저 생성하세요");
-            $("commentAuthor").innerHTML = opt(s.users, ulabel, "사용자를 먼저 생성하세요");
-            $("reporterSel").innerHTML = opt(s.users, ulabel, "사용자를 먼저 생성하세요");
-            $("activeUser").innerHTML = opt(s.users, ulabel, "사용자를 먼저 생성하세요");
-            $("workSel").innerHTML = opt(s.works, (w) => `${w.id}. ${w.title}`, "작품을 먼저 생성하세요");
-
-            const tt = $("targetType").value;
-            $("targetSel").innerHTML = tt === "work"
-                ? opt(s.works, (w) => `${w.id}. ${w.title}`, "작품이 없습니다")
-                : tt === "user"
-                    ? opt(s.users, ulabel, "사용자가 없습니다")
-                    : opt(
-                        s.comments,
-                        (c) => `${c.id}. ${(c.author && c.author.public_handle) || "unknown"} · ${c.body.slice(0, 24)}`,
-                        "댓글이 없습니다"
-                    );
-
-            if (s.uid) {
-                $("creatorSel").value = s.uid;
-                $("commentAuthor").value = s.uid;
-                $("reporterSel").value = s.uid;
-                $("activeUser").value = s.uid;
-            }
-            if (s.wid) {
-                $("workSel").value = s.wid;
-            }
-        }
-
-        function renderFeed() {
-            $("uc").textContent = s.users.length;
-            $("wc").textContent = s.works.length;
-            $("cc").textContent = s.comments.length;
-            $("rc").textContent = s.reports.length;
-
-            const w = s.works.find((x) => x.id === Number(s.wid)) || s.works[0];
-            if (!w) {
-                $("featured").innerHTML = '<div class="empty">샘플 생성 또는 업로드 탭에서 작품을 만들어 보세요.</div>';
-                return;
-            }
-
-            s.wid = w.id;
-            const cs = s.comments.filter((c) => Number(c.work) === w.id);
-            const a = w.assets && w.assets[0];
-
-            $("featured").innerHTML = `
-                <div class="row">
-                    <span class="pill">${w.media_type}</span>
-                    <span class="pill teal">${w.status}</span>
-                    <span class="pill ghost">${(w.creator && w.creator.public_handle) || "unknown"}</span>
-                </div>
-                <h3 class="featured-title">${w.title}</h3>
-                ${w.summary ? `<p class="featured-summary">${w.summary}</p>` : ""}
-                <div class="intent">${w.creator_intent}</div>
-                ${a && a.asset_url ? `<p style="margin:14px 0 0;"><a class="inline-link" href="${a.asset_url}" target="_blank" rel="noreferrer">등록된 에셋 열기</a></p>` : ""}
-                <div class="list">
-                    ${cs.length ? cs.map((c) => `
-                        <article class="item">
-                            <div class="list-row">
-                                <div class="row">
-                                    <span class="pill teal">${c.focus_area}</span>
-                                    <strong>${(c.author && c.author.public_handle) || "anonymous"}</strong>
-                                </div>
-                                <span class="chevron">›</span>
-                            </div>
-                            <p class="comment-copy">${c.body}</p>
-                        </article>
-                    `).join("") : '<div class="empty">아직 댓글이 없습니다.</div>'}
-                </div>
-            `;
-        }
-
-        function renderActivity() {
-            const items = [
-                ...s.comments.slice(-3).map((c) => ({
-                    t: `${(c.author && c.author.public_handle) || "anonymous"} commented`,
-                    m: c.focus_area,
-                    b: c.body,
-                    k: "comment",
-                })),
-                ...s.reports.slice(-3).map((r) => ({
-                    t: `Report #${r.id}`,
-                    m: r.reason,
-                    b: r.description || "설명 없이 접수된 신고",
-                    k: "report",
-                })),
-            ].reverse();
-
-            $("activityList").innerHTML = items.length
-                ? items.map((i) => `
-                    <article class="item">
-                        <div class="list-row">
-                            <div>
-                                <strong>${i.t}</strong>
-                                <p class="muted" style="margin:6px 0 0;">${i.b}</p>
-                            </div>
-                            <span class="pill ${i.k === "comment" ? "teal" : ""}">${i.m}</span>
-                        </div>
-                    </article>
-                `).join("")
-                : '<div class="empty">활동이 없습니다.</div>';
-        }
-
-        function renderProfile() {
-            const u = s.users.find((x) => x.id === Number(s.uid)) || s.users[0];
-            if (!u) {
-                $("activeProfile").innerHTML = '<div class="empty">아직 프로필이 없습니다.</div>';
-                $("userList").innerHTML = '<div class="empty">사용자를 생성해 보세요.</div>';
-                return;
-            }
-
-            s.uid = u.id;
-            const ws = s.works.filter((w) => w.creator && w.creator.id === u.id).length;
-            const cs = s.comments.filter((c) => c.author && c.author.id === u.id).length;
-
-            $("activeProfile").innerHTML = `
-                <article class="item">
-                    <div class="list-row">
-                        <div>
-                            <strong style="font-size:17px;">${u.public_handle}</strong>
-                            <p class="muted" style="margin:6px 0 0;">${u.country_code} · ${u.gender}</p>
-                        </div>
-                        <span class="pill">${u.age_group}</span>
-                    </div>
-                    <p style="margin:12px 0 0;">${u.bio || "소개가 아직 없습니다."}</p>
-                    <div class="hero-grid" style="margin-top:14px;">
-                        <article class="metric">
-                            <span class="metric-label">Works</span>
-                            <strong>${ws}</strong>
-                        </article>
-                        <article class="metric">
-                            <span class="metric-label">Comments</span>
-                            <strong>${cs}</strong>
-                        </article>
-                    </div>
-                </article>
-            `;
-
-            $("userList").innerHTML = s.users.map((x) => `
-                <article class="item">
-                    <div class="list-row">
-                        <div>
-                            <strong>${x.public_handle}</strong>
-                            <p class="muted" style="margin:6px 0 0;">${x.age_group} · ${x.gender}</p>
-                        </div>
-                        <span class="pill ghost">${x.country_code}</span>
-                    </div>
-                </article>
-            `).join("");
+        async function ensureStarterCommunity() {
+            if (state.users.length && state.works.length) return;
+            await seedCommunity(false);
         }
 
         function render() {
-            renderTabs();
-            renderSelects();
+            renderSwitcher();
+            renderStats();
             renderFeed();
+            renderDetail();
             renderActivity();
             renderProfile();
         }
 
-        const obj = (f) => Object.fromEntries(new FormData(f).entries());
-
-        async function post(url, p, msg) {
-            await api(url, { method: "POST", body: JSON.stringify(p) });
-            await refresh(msg);
+        function renderSwitcher() {
+            const select = $("#activeUser");
+            select.innerHTML = state.users.map((user) => `
+                <option value="${user.id}" ${Number(state.activeUserId) === user.id ? "selected" : ""}>
+                    ${escapeHtml(user.public_handle)} · ${escapeHtml(user.age_group)}
+                </option>
+            `).join("");
         }
 
-        async function mkUser(p) {
-            return api(e.users, { method: "POST", body: JSON.stringify(p) });
+        function renderStats() {
+            $("#stats").innerHTML = [
+                ["작품", state.works.length],
+                ["사용자", state.users.length],
+                ["댓글", state.comments.length],
+                ["신고", state.reports.length],
+            ].map(([label, count]) => `
+                <div class="stat"><b>${count}</b><span>${label}</span></div>
+            `).join("");
         }
 
-        async function mkWork(p) {
-            return api(e.works, { method: "POST", body: JSON.stringify(p) });
+        function visibleWorks() {
+            const user = activeUser();
+            let works = [...state.works];
+            if (state.feedMode === "mine" && user) {
+                works = works.filter((work) => work.creator?.id === user.id);
+            }
+            if (state.feedMode === "latest") {
+                works = works.slice(0, 6);
+            }
+            return works;
         }
 
-        async function mkComment(p) {
-            return api(e.comments, { method: "POST", body: JSON.stringify(p) });
+        function renderFeed() {
+            const works = visibleWorks();
+            $("#feedList").innerHTML = works.length ? works.map((work) => {
+                const count = commentsFor(work.id).length;
+                const mine = work.creator?.id === activeUser()?.id;
+                return `
+                    <button class="work-row ${Number(state.selectedWorkId) === work.id ? "active" : ""}" type="button" data-work-id="${work.id}">
+                        <div class="row-top">
+                            <div class="creator">
+                                <span class="avatar">${escapeHtml(initial(work.creator))}</span>
+                                <span>
+                                    <b>${escapeHtml(work.creator?.public_handle || "unknown")}</b>
+                                    <span>${escapeHtml(personaMeta(work.creator))}</span>
+                                </span>
+                            </div>
+                            <span class="chip ${mine ? "green" : "blue"}">${mine ? "내 작품" : labels[work.media_type]}</span>
+                        </div>
+                        <h3 class="title">${escapeHtml(work.title)}</h3>
+                        <p class="summary">${escapeHtml(work.summary || work.creator_intent)}</p>
+                        <div class="metrics">
+                            <span class="chip">${labels[work.media_type] || work.media_type}</span>
+                            <span class="chip">댓글 ${count}</span>
+                            <span class="chip">공개 피드</span>
+                        </div>
+                    </button>
+                `;
+            }).join("") : `<div class="empty">이 조건에 맞는 작품이 없습니다. 등록 탭에서 작품을 올리거나 커뮤니티 샘플을 채워보세요.</div>`;
         }
 
-        async function seed() {
-            try {
-                const n = Date.now().toString().slice(-6);
-                const creator = await mkUser({
-                    username: `creator_${n}`,
-                    password: "testpass1234",
-                    email: `creator_${n}@example.com`,
-                    public_handle: `mood-${n}`,
-                    gender: "female",
-                    country_code: "KR",
-                    age_group: "20s",
-                    auth_provider: "email",
-                    bio: "감정과 리듬을 중심으로 영상을 만드는 창작자",
-                });
-                const reviewer = await mkUser({
-                    username: `reviewer_${n}`,
-                    password: "testpass1234",
-                    email: `reviewer_${n}@example.com`,
-                    public_handle: `note-${n}`,
-                    gender: "male",
-                    country_code: "US",
-                    age_group: "30s",
-                    auth_provider: "email",
-                    bio: "장면 전환과 몰입감을 중심으로 피드백하는 사용자",
-                });
-                const work = await mkWork({
-                    creator_id: creator.id,
-                    title: "Midnight Corridor",
-                    summary: "불안감이 서서히 올라가는 90초 영상",
-                    creator_intent: "짧은 시간 안에 불안과 고립감이 전달되는지 확인하고 싶습니다.",
-                    media_type: "video",
-                    visibility: "public",
-                    status: "published",
-                    assets: [{
-                        asset_url: "https://example.com/midnight-corridor.mp4",
-                        thumbnail_url: "https://example.com/midnight-corridor.jpg",
-                        mime_type: "video/mp4",
-                        duration_seconds: 90,
-                        sort_order: 0,
-                    }],
-                });
-                await mkComment({
+        function renderDetail() {
+            const work = selectedWork();
+            if (!work) {
+                $("#workDetail").innerHTML = `
+                    <h2>선택된 작품 없음</h2>
+                    <p class="muted">커뮤니티 샘플을 채우면 여러 사용자의 작품과 댓글이 표시됩니다.</p>
+                `;
+                return;
+            }
+
+            const comments = commentsFor(work.id);
+            $("#workDetail").innerHTML = `
+                <h2>${escapeHtml(work.title)}</h2>
+                <p class="muted">${escapeHtml(work.creator?.public_handle || "unknown")} · ${escapeHtml(personaMeta(work.creator))}</p>
+                <p class="summary">${escapeHtml(work.creator_intent)}</p>
+                <div class="metrics" style="margin: 12px 0;">
+                    <span class="chip blue">${labels[work.media_type] || work.media_type}</span>
+                    <span class="chip green">${comments.length}개 피드백</span>
+                    <span class="chip">의도 검증</span>
+                </div>
+                <form class="form" id="commentForm">
+                    <div class="field">
+                        <label for="focusArea">피드백 초점</label>
+                        <select id="focusArea" name="focus_area">
+                            <option value="overall">전체</option>
+                            <option value="story">스토리</option>
+                            <option value="visual">비주얼</option>
+                            <option value="sound">사운드</option>
+                            <option value="editing">편집</option>
+                            <option value="emotion">감정</option>
+                            <option value="other">기타</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="commentBody">현재 사용자로 댓글 남기기</label>
+                        <textarea id="commentBody" name="body" required>의도는 잘 보입니다. 다만 초반 10초의 정보량을 조금 줄이면 감정선이 더 또렷해질 것 같아요.</textarea>
+                    </div>
+                    <button class="primary" type="submit">피드백 등록</button>
+                </form>
+                <p class="notice" id="commentNotice"></p>
+                <div class="stack" style="margin-top: 12px;">
+                    ${comments.length ? comments.map(renderComment).join("") : `<div class="empty">아직 댓글이 없습니다. 첫 피드백을 남겨보세요.</div>`}
+                </div>
+            `;
+            $("#commentForm").addEventListener("submit", submitComment);
+        }
+
+        function renderComment(comment) {
+            return `
+                <article class="comment">
+                    <div class="row-top">
+                        <div class="creator">
+                            <span class="avatar">${escapeHtml(initial(comment.author))}</span>
+                            <span>
+                                <b>${escapeHtml(comment.author?.public_handle || "unknown")}</b>
+                                <span>${escapeHtml(personaMeta(comment.author))}</span>
+                            </span>
+                        </div>
+                        <span class="chip orange">${labels[comment.focus_area] || comment.focus_area}</span>
+                    </div>
+                    <p>${escapeHtml(comment.body)}</p>
+                </article>
+            `;
+        }
+
+        function renderActivity() {
+            const recent = [...state.comments].slice(-8).reverse();
+            $("#activityList").innerHTML = recent.length ? recent.map((comment) => {
+                const work = state.works.find((item) => item.id === comment.work);
+                return `
+                    <article class="comment">
+                        <div class="row-top">
+                            <b>${escapeHtml(comment.author?.public_handle || "unknown")}</b>
+                            <span class="chip">${labels[comment.focus_area] || comment.focus_area}</span>
+                        </div>
+                        <p>${escapeHtml(comment.body)}</p>
+                        <p class="muted">작품: ${escapeHtml(work?.title || `#${comment.work}`)}</p>
+                    </article>
+                `;
+            }).join("") : `<div class="empty">아직 댓글 활동이 없습니다.</div>`;
+        }
+
+        function renderProfile() {
+            const user = activeUser();
+            const myWorks = user ? state.works.filter((work) => work.creator?.id === user.id) : [];
+            const myComments = user ? state.comments.filter((comment) => comment.author?.id === user.id) : [];
+
+            $("#profilePanel").innerHTML = user ? `
+                <div class="row-top">
+                    <div class="creator">
+                        <span class="avatar">${escapeHtml(initial(user))}</span>
+                        <span>
+                            <b>${escapeHtml(user.public_handle)}</b>
+                            <span>${escapeHtml(personaMeta(user))}</span>
+                        </span>
+                    </div>
+                    <span class="chip blue">반익명</span>
+                </div>
+                <p class="summary" style="margin-top: 12px;">${escapeHtml(user.bio || "소개가 없습니다.")}</p>
+                <div class="stats" style="margin-top: 12px;">
+                    <div class="stat"><b>${myWorks.length}</b><span>내 작품</span></div>
+                    <div class="stat"><b>${myComments.length}</b><span>내 댓글</span></div>
+                    <div class="stat"><b>${state.reports.filter((report) => report.reporter_id === user.id).length}</b><span>내 신고</span></div>
+                    <div class="stat"><b>${state.works.length}</b><span>전체 피드</span></div>
+                </div>
+            ` : `<div class="empty">사용자를 먼저 만들어주세요.</div>`;
+
+            $("#peopleList").innerHTML = state.users.length ? state.users.map((person) => `
+                <button class="person ${Number(state.activeUserId) === person.id ? "active" : ""}" type="button" data-user-id="${person.id}">
+                    <span class="avatar">${escapeHtml(initial(person))}</span>
+                    <span>
+                        <b>${escapeHtml(person.public_handle)}</b>
+                        <span class="muted">${escapeHtml(personaMeta(person))}</span>
+                    </span>
+                    <span class="chip">${state.works.filter((work) => work.creator?.id === person.id).length}개</span>
+                </button>
+            `).join("") : `<div class="empty">아직 사용자가 없습니다.</div>`;
+        }
+
+        async function submitComment(event) {
+            event.preventDefault();
+            const user = activeUser();
+            const work = selectedWork();
+            if (!user || !work) return;
+            const form = new FormData(event.currentTarget);
+            await request(api.comments, {
+                method: "POST",
+                body: JSON.stringify({
                     work_id: work.id,
-                    author_id: reviewer.id,
-                    body: "초반 분위기는 아주 좋고, 마지막 15초의 사운드 전환이 감정을 더 밀어주면 좋겠습니다.",
-                    focus_area: "sound",
-                });
-                s.uid = reviewer.id;
-                s.wid = work.id;
-                await refresh("샘플 시나리오를 생성했습니다.");
-            } catch (err) {
-                status(`샘플 생성 실패\n${err.message}`, true);
-            }
+                    author_id: user.id,
+                    focus_area: form.get("focus_area"),
+                    body: form.get("body"),
+                    status: "active",
+                }),
+            });
+            $("#commentNotice").textContent = `${user.public_handle} 이름으로 피드백을 등록했습니다.`;
+            await loadAll();
         }
 
-        document.querySelectorAll("[data-tab]").forEach((b) => b.addEventListener("click", () => {
-            s.tab = b.dataset.tab;
-            renderTabs();
-        }));
-
-        $("workSel").addEventListener("change", (event) => {
-            s.wid = Number(event.target.value);
-            renderFeed();
-        });
-
-        $("activeUser").addEventListener("change", (event) => {
-            s.uid = Number(event.target.value);
-            renderSelects();
-            renderProfile();
-        });
-
-        $("targetType").addEventListener("change", renderSelects);
-        $("refresh").addEventListener("click", () => refresh());
-        $("seed").addEventListener("click", seed);
-
-        $("commentForm").addEventListener("submit", async (ev) => {
-            ev.preventDefault();
-            const f = ev.currentTarget;
-            const d = obj(f);
-            const wid = Number($("workSel").value || s.wid);
-            try {
-                await post(e.comments, {
-                    work_id: wid,
-                    author_id: Number(d.author_id),
-                    focus_area: d.focus_area,
-                    body: d.body,
-                }, "댓글을 남겼습니다.");
-                f.reset();
-                f.focus_area.value = "overall";
-                if (s.uid) {
-                    $("commentAuthor").value = s.uid;
-                }
-            } catch (err) {
-                status(`댓글 생성 실패\n${err.message}`, true);
-            }
-        });
-
-        $("userForm").addEventListener("submit", async (ev) => {
-            ev.preventDefault();
-            const f = ev.currentTarget;
-            const d = obj(f);
-            if (!d.email) {
-                delete d.email;
-            }
-            if (!d.public_handle) {
-                delete d.public_handle;
-            }
-            try {
-                const u = await mkUser(d);
-                s.uid = u.id;
-                await refresh("프로필을 생성했습니다.");
-                f.reset();
-                f.password.value = "testpass1234";
-                f.country_code.value = "KR";
-                f.age_group.value = "20s";
-                f.auth_provider.value = "email";
-                f.gender.value = "undisclosed";
-            } catch (err) {
-                status(`프로필 생성 실패\n${err.message}`, true);
-            }
-        });
-
-        $("workForm").addEventListener("submit", async (ev) => {
-            ev.preventDefault();
-            const f = ev.currentTarget;
-            const d = obj(f);
-            try {
-                const w = await mkWork({
-                    creator_id: Number(d.creator_id),
-                    title: d.title,
-                    summary: d.summary,
-                    creator_intent: d.creator_intent,
-                    media_type: d.media_type,
+        async function submitWork(event) {
+            event.preventDefault();
+            const user = activeUser();
+            if (!user) return;
+            const form = new FormData(event.currentTarget);
+            const work = await request(api.works, {
+                method: "POST",
+                body: JSON.stringify({
+                    creator_id: user.id,
+                    title: form.get("title"),
+                    summary: form.get("summary"),
+                    creator_intent: form.get("creator_intent"),
+                    media_type: form.get("media_type"),
                     visibility: "public",
                     status: "published",
                     assets: [{
-                        asset_url: d.asset_url,
-                        thumbnail_url: d.thumbnail_url,
-                        mime_type: d.mime_type,
-                        duration_seconds: d.duration_seconds ? Number(d.duration_seconds) : null,
+                        asset_url: form.get("asset_url") || "https://example.com/demo-asset",
+                        thumbnail_url: "",
+                        mime_type: "",
                         sort_order: 0,
                     }],
+                }),
+            });
+            state.selectedWorkId = work.id;
+            state.feedMode = "all";
+            $("#workNotice").textContent = "작품이 공개 피드에 등록됐습니다.";
+            await loadAll();
+            switchSection("feed");
+        }
+
+        async function submitUser(event) {
+            event.preventDefault();
+            const form = new FormData(event.currentTarget);
+            const suffix = Date.now().toString().slice(-6);
+            const handle = String(form.get("public_handle") || "creator-new").replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 16);
+            const user = await request(api.users, {
+                method: "POST",
+                body: JSON.stringify({
+                    username: `${handle}-${suffix}`,
+                    password: "testpass1234",
+                    email: null,
+                    public_handle: `${handle}-${suffix}`.slice(0, 24),
+                    auth_provider: "email",
+                    provider_subject: null,
+                    gender: form.get("gender"),
+                    country_code: String(form.get("country_code") || "KR").toUpperCase().slice(0, 2),
+                    age_group: form.get("age_group"),
+                    bio: form.get("bio"),
+                }),
+            });
+            state.activeUserId = user.id;
+            $("#userNotice").textContent = "새 사용자를 만들고 현재 사용자로 전환했습니다.";
+            await loadAll();
+        }
+
+        async function submitReport(event) {
+            event.preventDefault();
+            const user = activeUser();
+            const work = selectedWork();
+            if (!user || !work) return;
+            const form = new FormData(event.currentTarget);
+            await request(api.reports, {
+                method: "POST",
+                body: JSON.stringify({
+                    reporter_id: user.id,
+                    work_id: work.id,
+                    comment_id: null,
+                    reported_user_id: null,
+                    reason: form.get("reason"),
+                    description: form.get("description"),
+                    status: "open",
+                }),
+            });
+            $("#reportNotice").textContent = `${work.title} 신고 레코드를 생성했습니다.`;
+            await loadAll();
+        }
+
+        async function seedCommunity(showNotice = true) {
+            const suffix = Date.now().toString().slice(-6);
+            const personas = [
+                ["film-eye", "30s", "KR", "female", "편집 리듬과 장면 호흡을 주로 봅니다."],
+                ["sound-scout", "20s", "US", "undisclosed", "사운드, 몰입감, 첫인상 피드백을 남깁니다."],
+                ["poster-lab", "40s", "JP", "male", "이미지 구성과 가독성에 민감합니다."],
+                ["story-miner", "10s", "KR", "non_binary", "스토리와 감정 전달을 솔직하게 봅니다."],
+            ];
+
+            const users = [];
+            for (const [handle, age, country, gender, bio] of personas) {
+                users.push(await request(api.users, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        username: `${handle}-${suffix}`,
+                        password: "testpass1234",
+                        email: null,
+                        public_handle: `${handle}-${suffix}`.slice(0, 24),
+                        auth_provider: "email",
+                        provider_subject: null,
+                        gender,
+                        country_code: country,
+                        age_group: age,
+                        bio,
+                    }),
+                }));
+            }
+
+            const workPayloads = [
+                [users[0], "새벽 골목 러프컷", "긴장감이 충분히 쌓이는지 확인하고 싶습니다.", "관객이 대사 없이도 주인공의 불안을 따라오게 만드는 것이 목표입니다.", "video"],
+                [users[1], "도시 소음 앰비언스", "반복 청취해도 피로하지 않은지 궁금합니다.", "노이즈가 음악처럼 느껴지는 균형점을 찾고 있습니다.", "audio"],
+                [users[2], "전시 포스터 시안", "문구 위계와 첫인상이 명확한지 피드백을 받고 싶습니다.", "작품보다 메시지가 먼저 보이되 너무 설명적으로 보이지 않게 만들고 싶습니다.", "image"],
+                [users[3], "캐릭터 표정 연구", "감정 변화가 한눈에 읽히는지 보고 싶습니다.", "작은 얼굴 변화만으로 망설임과 결심이 구분되게 하는 것이 목표입니다.", "illustration"],
+            ];
+
+            const works = [];
+            for (const [creator, title, summary, intent, mediaType] of workPayloads) {
+                works.push(await request(api.works, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        creator_id: creator.id,
+                        title,
+                        summary,
+                        creator_intent: intent,
+                        media_type: mediaType,
+                        visibility: "public",
+                        status: "published",
+                        assets: [{
+                            asset_url: "https://example.com/community-demo",
+                            thumbnail_url: "",
+                            mime_type: "",
+                            sort_order: 0,
+                        }],
+                    }),
+                }));
+            }
+
+            const comments = [
+                [works[0], users[1], "sound", "발소리와 배경음의 거리가 좋아요. 다만 마지막 컷 직전에는 소리를 한 번 덜어내면 더 긴장될 것 같습니다."],
+                [works[0], users[3], "emotion", "불안은 잘 느껴지는데 주인공이 무엇을 두려워하는지는 한 컷 정도 더 필요해 보여요."],
+                [works[1], users[0], "overall", "초반 20초는 몰입감이 강합니다. 중반부 고역대가 조금 날카로워서 모바일 스피커에서는 피로할 수 있어요."],
+                [works[2], users[3], "visual", "타이틀은 강하지만 날짜 정보가 늦게 읽힙니다. 하단 정보 블록 대비를 조금만 올려보면 좋겠습니다."],
+                [works[3], users[2], "story", "왼쪽에서 오른쪽으로 갈수록 결심이 생기는 흐름이 잘 보여요. 두 번째 표정만 더 애매해도 자연스러울 듯합니다."],
+                [works[2], users[1], "overall", "처음 봤을 때 전시 성격은 바로 이해됐습니다. 썸네일 크기에서도 읽히는지 확인하면 좋겠습니다."],
+            ];
+
+            for (const [work, author, focusArea, body] of comments) {
+                await request(api.comments, {
+                    method: "POST",
+                    body: JSON.stringify({
+                        work_id: work.id,
+                        author_id: author.id,
+                        focus_area: focusArea,
+                        body,
+                        status: "active",
+                    }),
                 });
-                s.wid = w.id;
-                await refresh("작품을 게시했습니다.");
-                f.reset();
-                if (s.uid) {
-                    $("creatorSel").value = s.uid;
-                }
-                s.tab = "feed";
-                renderTabs();
-            } catch (err) {
-                status(`작품 생성 실패\n${err.message}`, true);
+            }
+
+            state.activeUserId = users[0].id;
+            state.selectedWorkId = works[0].id;
+            if (showNotice) $("#seedCommunity").textContent = "샘플 추가 완료";
+            await loadAll();
+        }
+
+        function switchSection(section) {
+            state.section = section;
+            $$(".section").forEach((element) => element.classList.toggle("active", element.dataset.section === section));
+            $$(".tab").forEach((element) => element.classList.toggle("active", element.dataset.tab === section));
+        }
+
+        document.addEventListener("click", (event) => {
+            const workButton = event.target.closest("[data-work-id]");
+            if (workButton) {
+                state.selectedWorkId = Number(workButton.dataset.workId);
+                render();
+                return;
+            }
+
+            const userButton = event.target.closest("[data-user-id]");
+            if (userButton) {
+                state.activeUserId = Number(userButton.dataset.userId);
+                render();
+                return;
+            }
+
+            const tab = event.target.closest("[data-tab]");
+            if (tab) {
+                switchSection(tab.dataset.tab);
             }
         });
 
-        $("reportForm").addEventListener("submit", async (ev) => {
-            ev.preventDefault();
-            const f = ev.currentTarget;
-            const d = obj(f);
-            const p = {
-                reporter_id: Number(d.reporter_id),
-                reason: d.reason,
-                description: d.description,
-            };
-            if (d.target_type === "work") {
-                p.work_id = Number(d.target_id);
-            } else if (d.target_type === "user") {
-                p.reported_user_id = Number(d.target_id);
-            } else {
-                p.comment_id = Number(d.target_id);
-            }
-            try {
-                await post(e.reports, p, "신고를 접수했습니다.");
-                f.reset();
-                $("targetType").value = "comment";
-                renderSelects();
-            } catch (err) {
-                status(`신고 생성 실패\n${err.message}`, true);
-            }
+        $$(".segment").forEach((button) => {
+            button.addEventListener("click", () => {
+                state.feedMode = button.dataset.mode;
+                $$(".segment").forEach((item) => item.classList.toggle("active", item === button));
+                renderFeed();
+            });
         });
 
-        refresh("앱 프로토타입이 준비되었습니다. 샘플 생성 버튼으로 바로 시작할 수 있습니다.");
+        $("#activeUser").addEventListener("change", (event) => {
+            state.activeUserId = Number(event.target.value);
+            render();
+        });
+
+        $("#refresh").addEventListener("click", loadAll);
+        $("#seedCommunity").addEventListener("click", () => seedCommunity(true));
+        $("#workForm").addEventListener("submit", submitWork);
+        $("#userForm").addEventListener("submit", submitUser);
+        $("#reportForm").addEventListener("submit", submitReport);
+
+        loadAll()
+            .then(ensureStarterCommunity)
+            .catch((error) => {
+                $("#feedList").innerHTML = `<div class="empty">API 연결 실패: ${escapeHtml(error.message)}</div>`;
+            });
     </script>
 </body>
 </html>

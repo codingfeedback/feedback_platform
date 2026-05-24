@@ -15,6 +15,8 @@ class DemoPageTests(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Feedback Loop")
+        self.assertContains(response, "커뮤니티 샘플 채우기")
+        self.assertContains(response, "현재 사용자")
 
     def test_ops_page_loads(self):
         response = self.client.get("/ops/")
