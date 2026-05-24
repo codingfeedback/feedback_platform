@@ -22,7 +22,8 @@ Python backend MVP scaffold for a semi-anonymous creative feedback platform.
 2. Confirm `.env` contains your local IP in `DJANGO_ALLOWED_HOSTS`.
 3. Run `python manage.py migrate` from `backend`.
 4. Run `python manage.py migrate` from `backend`.
-5. Run `python manage.py runserver 0.0.0.0:8000`.
+5. For PC browser testing, run `powershell -ExecutionPolicy Bypass -File scripts\run_local_server.ps1`.
+6. For phone testing on the same Wi-Fi, run `python manage.py runserver 0.0.0.0:8000` from `backend`.
 
 ## Phone access
 
@@ -35,6 +36,7 @@ Python backend MVP scaffold for a semi-anonymous creative feedback platform.
 
 Your iPhone and this PC must be on the same Wi-Fi network.
 If Windows Firewall asks, allow Python on private networks.
+The local server is a development process. Keep the terminal window open while testing; closing it stops the site.
 
 ## Demo UI
 
@@ -48,3 +50,13 @@ The root screen is a social login entry screen with Google, KakaoTalk, and Naver
 OAuth credentials are configured with `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `KAKAO_OAUTH_CLIENT_ID`, `KAKAO_OAUTH_CLIENT_SECRET`, `NAVER_OAUTH_CLIENT_ID`, and `NAVER_OAUTH_CLIENT_SECRET`.
 The app prototype lives at `/app/` for validating the end-user flow before OAuth credentials are ready.
 The `/ops/` screen is the operations-oriented demo surface for manual API exercise.
+
+## OAuth callback URLs
+
+Register these local callback URLs in each provider console:
+
+- Google: `http://127.0.0.1:8000/accounts/google/login/callback/`
+- Kakao: `http://127.0.0.1:8000/accounts/kakao/login/callback/`
+- Naver: `http://127.0.0.1:8000/accounts/naver/login/callback/`
+
+For phone testing, also add the LAN equivalents such as `http://192.168.0.8:8000/accounts/naver/login/callback/`.
