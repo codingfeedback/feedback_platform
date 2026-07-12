@@ -481,6 +481,56 @@
             line-height: 1.5;
         }
 
+        .sentiment-grid {
+            display: grid;
+            gap: 8px;
+        }
+
+        .sentiment-row {
+            display: grid;
+            gap: 7px;
+            padding: 10px;
+            border-radius: 12px;
+            background: rgba(16, 24, 40, 0.04);
+        }
+
+        .sentiment-row-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .sentiment-bars {
+            display: grid;
+            grid-template-columns: var(--positive, 0fr) var(--neutral, 0fr) var(--negative, 0fr);
+            height: 10px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(16, 24, 40, 0.08);
+        }
+
+        .sentiment-bars span:nth-child(1) {
+            background: #12b76a;
+        }
+
+        .sentiment-bars span:nth-child(2) {
+            background: #fdb022;
+        }
+
+        .sentiment-bars span:nth-child(3) {
+            background: #f04438;
+        }
+
+        .quote {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
         .insight-actions {
             display: grid;
             gap: 8px;
@@ -928,9 +978,85 @@
             return sorted[0]?.[0] || "아직 없음";
         }
 
-        function representativeComment(comments, focusLabel) {
-            const comment = comments.find((item) => (labels[item.focus_area] || item.focus_area) === focusLabel);
-            return comment?.body || comments[0]?.body || "대표 의견이 아직 없습니다.";
+        function sentimentOf(comment) {
+            const text = comment.body || "";
+            const positiveWords = ["좋", "잘", "강", "매력", "분명", "전달", "몰입", "기억", "선명", "괜찮", "이해", "긍정"];
+            const negativeWords = ["어렵", "부족", "문제", "피로", "헷갈", "낮아", "줄", "덜", "필요", "아쉽", "불명확", "부정"];
+            const caveatWords = ["다만", "하지만", "단,", "그러나"];
+            const positives = positiveWords.filter((word) => text.includes(word)).length;
+            const negatives = negativeWords.filter((word) => text.includes(word)).length;
+            const hasCaveat = caveatWords.some((word) => text.includes(word));
+            if (negatives > positives) return "negative";
+            if (positives > negatives && !hasCaveat) return "positive";
+            if (positives >= negatives + 2) return "positive";
+            if (negatives >= positives + 2) return "negative";
+            return "neutral";
+        }
+
+        function sentimentLabel(value) {
+            return {
+                positive: "긍정",
+                neutral: "중립",
+                negative: "부정",
+            }[value] || "중립";
+        }
+
+        function sentimentCounts(comments) {
+            return comments.reduce((acc, comment) => {
+                acc[sentimentOf(comment)] += 1;
+                return acc;
+            }, { positive: 0, neutral: 0, negative: 0 });
+        }
+
+        function sentimentPercent(counts, key) {
+            const total = counts.positive + counts.neutral + counts.negative;
+            return total ? Math.round((counts[key] / total) * 100) : 0;
+        }
+
+        function dominantSentiment(counts) {
+            return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || "neutral";
+        }
+
+        function representativeComment(comments, sentiment = null) {
+            const filtered = sentiment ? comments.filter((comment) => sentimentOf(comment) === sentiment) : comments;
+            const comment = filtered[0] || comments[0];
+            return comment?.body || "대표 의견이 아직 없습니다.";
+        }
+
+        function groupedSentimentRows(comments, getGroup, limit = 4) {
+            const groups = comments.reduce((acc, comment) => {
+                const key = getGroup(comment) || "미상";
+                acc[key] = acc[key] || [];
+                acc[key].push(comment);
+                return acc;
+            }, {});
+            return Object.entries(groups)
+                .sort((a, b) => b[1].length - a[1].length)
+                .slice(0, limit)
+                .map(([group, groupComments]) => {
+                    const counts = sentimentCounts(groupComments);
+                    const sentiment = dominantSentiment(counts);
+                    const total = groupComments.length;
+                    return `
+                        <div class="sentiment-row">
+                            <div class="sentiment-row-head">
+                                <span>${escapeHtml(group)} · ${escapeHtml(sentimentLabel(sentiment))} 우세</span>
+                                <span>n=${total}</span>
+                            </div>
+                            <div class="sentiment-bars" style="--positive: ${counts.positive || 0}fr; --neutral: ${counts.neutral || 0}fr; --negative: ${counts.negative || 0}fr;">
+                                <span title="긍정 ${sentimentPercent(counts, "positive")}%"></span>
+                                <span title="중립 ${sentimentPercent(counts, "neutral")}%"></span>
+                                <span title="부정 ${sentimentPercent(counts, "negative")}%"></span>
+                            </div>
+                            <div class="metrics">
+                                <span class="chip green">긍정 ${sentimentPercent(counts, "positive")}%</span>
+                                <span class="chip orange">중립 ${sentimentPercent(counts, "neutral")}%</span>
+                                <span class="chip">부정 ${sentimentPercent(counts, "negative")}%</span>
+                            </div>
+                            <p class="quote">대표 코멘트: ${escapeHtml(representativeComment(groupComments, sentiment))}</p>
+                        </div>
+                    `;
+                }).join("");
         }
 
         function renderDemographicInsights(comments) {
@@ -938,7 +1064,7 @@
             if (!total) {
                 return `
                     <section class="insight-grid" id="demographicInsights">
-                        <div class="empty">피드백이 쌓이면 나이대, 국가, 성별, 피드백 초점 기반 통계가 여기에 표시됩니다.</div>
+                        <div class="empty">피드백이 쌓이면 세그먼트별 긍정/중립/부정 평가와 대표 코멘트가 여기에 표시됩니다.</div>
                     </section>
                 `;
             }
@@ -948,34 +1074,43 @@
             const byGender = countBy(comments, (comment) => genderLabel(comment.author?.gender));
             const byFocus = countBy(comments, (comment) => labels[comment.focus_area] || comment.focus_area);
             const topFocus = strongestGroup(byFocus);
-            const topComment = representativeComment(comments, topFocus);
+            const overallCounts = sentimentCounts(comments);
+            const overallSentiment = dominantSentiment(overallCounts);
+            const topComment = representativeComment(comments, overallSentiment);
 
             return `
                 <section class="insight-grid" id="demographicInsights">
                     <div class="insight-card">
-                        <h4>피드백 인사이트</h4>
+                        <h4>평가 성향 요약</h4>
                         <p class="insight-summary">
-                            총 ${total}개의 피드백 중 ${escapeHtml(strongestGroup(byAge))}, ${escapeHtml(strongestGroup(byCountry))}, ${escapeHtml(strongestGroup(byGender))} 응답 비중이 가장 높습니다.
-                            가장 많이 언급된 초점은 ${escapeHtml(topFocus)}입니다.
+                            총 ${total}개의 피드백 기준으로 ${escapeHtml(sentimentLabel(overallSentiment))} 평가가 가장 많습니다.
+                            많이 언급된 피드백 초점은 ${escapeHtml(topFocus)}입니다.
                         </p>
-                        <p class="insight-summary"><b>대표 의견</b>: ${escapeHtml(topComment)}</p>
-                        <p class="insight-summary">각 통계는 상위 3개만 먼저 보여줍니다. 전체 원문은 아래 댓글 목록에서 확인합니다.</p>
+                        <div class="metrics">
+                            <span class="chip green">긍정 ${sentimentPercent(overallCounts, "positive")}%</span>
+                            <span class="chip orange">중립 ${sentimentPercent(overallCounts, "neutral")}%</span>
+                            <span class="chip">부정 ${sentimentPercent(overallCounts, "negative")}%</span>
+                        </div>
+                        <p class="insight-summary"><b>대표 코멘트</b>: ${escapeHtml(topComment)}</p>
                     </div>
                     <div class="insight-card">
-                        <h4>나이대별 반응</h4>
-                        ${insightRows(byAge, total)}
+                        <h4>나이대별 평가 성향</h4>
+                        <div class="sentiment-grid">${groupedSentimentRows(comments, (comment) => ageLabel(comment.author?.age_group))}</div>
                     </div>
                     <div class="insight-card">
-                        <h4>국가별 반응</h4>
-                        ${insightRows(byCountry, total)}
+                        <h4>국가별 평가 성향</h4>
+                        <div class="sentiment-grid">${groupedSentimentRows(comments, (comment) => comment.author?.country_code || "미상")}</div>
                     </div>
                     <div class="insight-card">
-                        <h4>성별 반응</h4>
-                        ${insightRows(byGender, total)}
+                        <h4>성별 평가 성향</h4>
+                        <div class="sentiment-grid">${groupedSentimentRows(comments, (comment) => genderLabel(comment.author?.gender))}</div>
                     </div>
                     <div class="insight-card">
-                        <h4>피드백 초점</h4>
+                        <h4>피드백 참여 분포 Top 3</h4>
                         ${insightRows(byFocus, total)}
+                        ${insightRows(byAge, total)}
+                        ${insightRows(byCountry, total)}
+                        ${insightRows(byGender, total)}
                     </div>
                 </section>
             `;
