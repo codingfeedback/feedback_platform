@@ -830,6 +830,17 @@
             return Array.isArray(payload) ? payload : payload.results || [];
         }
 
+        async function requestAll(url) {
+            const items = [];
+            let nextUrl = url;
+            while (nextUrl) {
+                const payload = await request(nextUrl);
+                items.push(...unwrap(payload));
+                nextUrl = payload.next || null;
+            }
+            return items;
+        }
+
         async function request(url, options = {}) {
             const response = await fetch(url, {
                 headers: {
@@ -969,10 +980,10 @@
 
         async function loadAll() {
             const [users, works, comments, reports] = await Promise.all([
-                request(api.users).then(unwrap),
-                request(`${api.works}?visibility=public&status=published`).then(unwrap),
-                request(api.comments).then(unwrap),
-                request(api.reports).then(unwrap),
+                requestAll(api.users),
+                requestAll(`${api.works}?visibility=public&status=published`),
+                requestAll(api.comments),
+                requestAll(api.reports),
             ]);
 
             state.users = users;
@@ -1034,8 +1045,16 @@
             return works;
         }
 
+        function syncSelectedWorkWithVisibleFeed(works) {
+            if (!works.length) return;
+            if (!works.some((work) => work.id === Number(state.selectedWorkId))) {
+                state.selectedWorkId = works[0].id;
+            }
+        }
+
         function renderFeed() {
             const works = visibleWorks();
+            syncSelectedWorkWithVisibleFeed(works);
             $("#feedList").innerHTML = works.length ? works.map((work) => {
                 const count = commentsFor(work.id).length;
                 const mine = work.creator?.id === activeUser()?.id;
@@ -1060,7 +1079,11 @@
                         </div>
                     </button>
                 `;
-            }).join("") : `<div class="empty">이 조건에 맞는 작품이 없습니다. 등록 탭에서 작품을 올리거나 커뮤니티 샘플을 채워보세요.</div>`;
+            }).join("") : `
+                <div class="empty">
+                    현재 사용자에게 등록된 작품이 없습니다. 등록 탭에서 작품을 올리거나, 상단의 현재 사용자를 작품 작성자로 바꿔보세요.
+                </div>
+            `;
         }
 
         function renderDetail() {
@@ -1397,6 +1420,7 @@
                 state.feedMode = button.dataset.mode;
                 $$(".segment").forEach((item) => item.classList.toggle("active", item === button));
                 renderFeed();
+                renderDetail();
             });
         });
 
