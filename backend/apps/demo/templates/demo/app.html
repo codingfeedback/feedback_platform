@@ -429,6 +429,58 @@
             gap: 7px;
         }
 
+        .insight-grid {
+            display: grid;
+            gap: 10px;
+            margin: 12px 0;
+        }
+
+        .insight-card {
+            display: grid;
+            gap: 8px;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.68);
+        }
+
+        .insight-card h4 {
+            margin: 0;
+            font-size: 13px;
+            letter-spacing: 0;
+        }
+
+        .bar-row {
+            display: grid;
+            grid-template-columns: 76px 1fr 34px;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .bar {
+            height: 8px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: rgba(16, 24, 40, 0.08);
+        }
+
+        .bar span {
+            display: block;
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(90deg, var(--blue), #34d399);
+        }
+
+        .insight-summary {
+            margin: 0;
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
         .panel {
             padding: 14px;
             margin-top: 12px;
@@ -819,6 +871,89 @@
             }[value] || "성별 미공개";
         }
 
+        function ageLabel(value) {
+            return {
+                "10s": "10대",
+                "20s": "20대",
+                "30s": "30대",
+                "40s": "40대",
+                "50s": "50대",
+                "60s": "60대",
+            }[value] || "미상";
+        }
+
+        function countBy(items, getKey) {
+            return items.reduce((acc, item) => {
+                const key = getKey(item) || "미상";
+                acc[key] = (acc[key] || 0) + 1;
+                return acc;
+            }, {});
+        }
+
+        function insightRows(counts, total) {
+            return Object.entries(counts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([label, count]) => {
+                    const percent = total ? Math.round((count / total) * 100) : 0;
+                    return `
+                        <div class="bar-row">
+                            <span>${escapeHtml(label)}</span>
+                            <span class="bar"><span style="width: ${percent}%"></span></span>
+                            <span>${percent}%</span>
+                        </div>
+                    `;
+                }).join("");
+        }
+
+        function strongestGroup(counts) {
+            const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            return sorted[0]?.[0] || "아직 없음";
+        }
+
+        function renderDemographicInsights(comments) {
+            const total = comments.length;
+            if (!total) {
+                return `
+                    <section class="insight-grid" id="demographicInsights">
+                        <div class="empty">피드백이 쌓이면 나이대, 국가, 성별, 피드백 초점 기반 통계가 여기에 표시됩니다.</div>
+                    </section>
+                `;
+            }
+
+            const byAge = countBy(comments, (comment) => ageLabel(comment.author?.age_group));
+            const byCountry = countBy(comments, (comment) => comment.author?.country_code || "미상");
+            const byGender = countBy(comments, (comment) => genderLabel(comment.author?.gender));
+            const byFocus = countBy(comments, (comment) => labels[comment.focus_area] || comment.focus_area);
+
+            return `
+                <section class="insight-grid" id="demographicInsights">
+                    <div class="insight-card">
+                        <h4>피드백 인사이트</h4>
+                        <p class="insight-summary">
+                            총 ${total}개의 피드백 중 ${escapeHtml(strongestGroup(byAge))}, ${escapeHtml(strongestGroup(byCountry))}, ${escapeHtml(strongestGroup(byGender))} 응답 비중이 가장 높습니다.
+                            가장 많이 언급된 초점은 ${escapeHtml(strongestGroup(byFocus))}입니다.
+                        </p>
+                    </div>
+                    <div class="insight-card">
+                        <h4>나이대별 반응</h4>
+                        ${insightRows(byAge, total)}
+                    </div>
+                    <div class="insight-card">
+                        <h4>국가별 반응</h4>
+                        ${insightRows(byCountry, total)}
+                    </div>
+                    <div class="insight-card">
+                        <h4>성별 반응</h4>
+                        ${insightRows(byGender, total)}
+                    </div>
+                    <div class="insight-card">
+                        <h4>피드백 초점</h4>
+                        ${insightRows(byFocus, total)}
+                    </div>
+                </section>
+            `;
+        }
+
         function initial(user) {
             return (user?.public_handle || "?").slice(0, 1).toUpperCase();
         }
@@ -948,6 +1083,7 @@
                     <span class="chip green">${comments.length}개 피드백</span>
                     <span class="chip">의도 검증</span>
                 </div>
+                ${renderDemographicInsights(comments)}
                 <form class="form" id="commentForm">
                     <div class="field">
                         <label for="focusArea">피드백 초점</label>
