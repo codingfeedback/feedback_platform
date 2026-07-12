@@ -481,6 +481,12 @@
             line-height: 1.5;
         }
 
+        .insight-actions {
+            display: grid;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
         .panel {
             padding: 14px;
             margin-top: 12px;
@@ -901,9 +907,10 @@
             }, {});
         }
 
-        function insightRows(counts, total) {
+        function insightRows(counts, total, limit = 3) {
             return Object.entries(counts)
                 .sort((a, b) => b[1] - a[1])
+                .slice(0, limit)
                 .map(([label, count]) => {
                     const percent = total ? Math.round((count / total) * 100) : 0;
                     return `
@@ -921,6 +928,11 @@
             return sorted[0]?.[0] || "아직 없음";
         }
 
+        function representativeComment(comments, focusLabel) {
+            const comment = comments.find((item) => (labels[item.focus_area] || item.focus_area) === focusLabel);
+            return comment?.body || comments[0]?.body || "대표 의견이 아직 없습니다.";
+        }
+
         function renderDemographicInsights(comments) {
             const total = comments.length;
             if (!total) {
@@ -935,6 +947,8 @@
             const byCountry = countBy(comments, (comment) => comment.author?.country_code || "미상");
             const byGender = countBy(comments, (comment) => genderLabel(comment.author?.gender));
             const byFocus = countBy(comments, (comment) => labels[comment.focus_area] || comment.focus_area);
+            const topFocus = strongestGroup(byFocus);
+            const topComment = representativeComment(comments, topFocus);
 
             return `
                 <section class="insight-grid" id="demographicInsights">
@@ -942,8 +956,10 @@
                         <h4>피드백 인사이트</h4>
                         <p class="insight-summary">
                             총 ${total}개의 피드백 중 ${escapeHtml(strongestGroup(byAge))}, ${escapeHtml(strongestGroup(byCountry))}, ${escapeHtml(strongestGroup(byGender))} 응답 비중이 가장 높습니다.
-                            가장 많이 언급된 초점은 ${escapeHtml(strongestGroup(byFocus))}입니다.
+                            가장 많이 언급된 초점은 ${escapeHtml(topFocus)}입니다.
                         </p>
+                        <p class="insight-summary"><b>대표 의견</b>: ${escapeHtml(topComment)}</p>
+                        <p class="insight-summary">각 통계는 상위 3개만 먼저 보여줍니다. 전체 원문은 아래 댓글 목록에서 확인합니다.</p>
                     </div>
                     <div class="insight-card">
                         <h4>나이대별 반응</h4>
@@ -1006,11 +1022,16 @@
 
         function render() {
             renderSwitcher();
+            renderSegments();
             renderStats();
             renderFeed();
             renderDetail();
             renderActivity();
             renderProfile();
+        }
+
+        function renderSegments() {
+            $$(".segment").forEach((item) => item.classList.toggle("active", item.dataset.mode === state.feedMode));
         }
 
         function renderSwitcher() {
@@ -1106,6 +1127,10 @@
                     <span class="chip green">${comments.length}개 피드백</span>
                     <span class="chip">의도 검증</span>
                 </div>
+                <div class="insight-actions">
+                    <button class="secondary" id="seedMyWorkFeedback" type="button">내 작품에 100명 피드백 생성</button>
+                    <p class="notice" id="batchFeedbackNotice"></p>
+                </div>
                 ${renderDemographicInsights(comments)}
                 <form class="form" id="commentForm">
                     <div class="field">
@@ -1132,6 +1157,7 @@
                 </div>
             `;
             $("#commentForm").addEventListener("submit", submitComment);
+            $("#seedMyWorkFeedback").addEventListener("click", seedMyWorkFeedback);
         }
 
         function renderComment(comment) {
@@ -1204,6 +1230,131 @@
                     <span class="chip">${state.works.filter((work) => work.creator?.id === person.id).length}개</span>
                 </button>
             `).join("") : `<div class="empty">아직 사용자가 없습니다.</div>`;
+        }
+
+        async function ensureActiveUserForBatch() {
+            const user = activeUser();
+            if (user) return user;
+            const suffix = Date.now().toString().slice(-6);
+            const created = await request(api.users, {
+                method: "POST",
+                body: JSON.stringify({
+                    username: `owner-${suffix}`,
+                    password: "testpass1234",
+                    email: null,
+                    public_handle: `owner-${suffix}`,
+                    auth_provider: "email",
+                    provider_subject: null,
+                    gender: "undisclosed",
+                    country_code: "KR",
+                    age_group: "30s",
+                    bio: "피드백을 받기 위해 작품을 올린 창작자입니다.",
+                }),
+            });
+            state.activeUserId = created.id;
+            return created;
+        }
+
+        async function ensureMyFeedbackTargetWork(owner) {
+            const selected = selectedWork();
+            if (selected?.creator?.id === owner.id) return selected;
+            const mine = state.works.find((work) => work.creator?.id === owner.id);
+            if (mine) return mine;
+            return request(api.works, {
+                method: "POST",
+                body: JSON.stringify({
+                    creator_id: owner.id,
+                    title: "내 작품 피드백 테스트",
+                    summary: "100명 규모의 반익명 피드백과 통계 확인용 작품입니다.",
+                    creator_intent: "다양한 나이대, 국가, 성별의 사용자가 작품 의도를 어떻게 받아들이는지 확인하고 싶습니다.",
+                    media_type: "video",
+                    visibility: "public",
+                    status: "published",
+                    assets: [{
+                        asset_url: "https://example.com/my-feedback-test.mp4",
+                        thumbnail_url: "",
+                        mime_type: "",
+                        sort_order: 0,
+                    }],
+                }),
+            });
+        }
+
+        function batchAudienceProfile(index, suffix) {
+            const ageGroups = ["10s", "20s", "20s", "30s", "30s", "40s", "50s", "60s"];
+            const countries = ["KR", "KR", "US", "JP", "FR", "BR", "ID", "IN", "DE", "CA"];
+            const genders = ["female", "male", "undisclosed", "non_binary", "female", "male"];
+            return {
+                username: `audience-${suffix}-${index}`,
+                password: "testpass1234",
+                email: null,
+                public_handle: `aud-${suffix}-${index}`.slice(0, 24),
+                auth_provider: "email",
+                provider_subject: null,
+                gender: genders[index % genders.length],
+                country_code: countries[index % countries.length],
+                age_group: ageGroups[index % ageGroups.length],
+                bio: "작품 감상 후 짧고 구체적인 피드백을 남기는 테스트 사용자입니다.",
+            };
+        }
+
+        function batchFeedbackTemplate(index) {
+            const templates = [
+                ["emotion", "감정선은 분명히 전달됩니다. 다만 후반부 전환 직전에 한 박자 쉬면 여운이 더 커질 것 같습니다."],
+                ["visual", "첫 인상은 강합니다. 모바일 화면에서는 핵심 이미지 대비를 조금 더 올리면 메시지가 빨리 읽힐 것 같습니다."],
+                ["story", "의도는 이해되지만 주인공의 선택 이유가 한 장면 정도 더 보이면 설득력이 올라갈 것 같습니다."],
+                ["editing", "리듬은 좋지만 중반부 컷이 조금 촘촘합니다. 중요한 감정 컷은 1초 정도 더 길게 남겨도 괜찮아 보입니다."],
+                ["sound", "사운드가 몰입을 잘 만듭니다. 다만 클라이맥스 직전에는 소리를 덜어내면 긴장감이 더 선명할 것 같습니다."],
+                ["overall", "전체적으로 작품 의도는 잘 전달됩니다. 가장 강한 장면을 초반에 살짝 예고하면 끝까지 보는 힘이 생길 것 같습니다."],
+                ["emotion", "마지막 장면의 여운이 좋습니다. 초반 감정 정보가 조금만 줄면 관객이 더 직접 해석할 여지가 생길 듯합니다."],
+                ["visual", "톤과 색감은 기억에 남습니다. 썸네일 상태에서도 무엇을 봐야 하는지 한눈에 들어오면 더 좋겠습니다."],
+                ["story", "이야기의 방향은 매력적입니다. 갈등의 원인을 아주 짧게라도 암시하면 몰입 장벽이 낮아질 것 같습니다."],
+                ["editing", "전개 속도는 빠르고 경쾌합니다. 단, 핵심 메시지가 지나가는 컷은 조금 더 호흡을 줘도 됩니다."],
+            ];
+            return templates[index % templates.length];
+        }
+
+        async function seedMyWorkFeedback() {
+            const button = $("#seedMyWorkFeedback");
+            const notice = $("#batchFeedbackNotice");
+            button.disabled = true;
+            button.textContent = "100명 피드백 생성 중...";
+            notice.textContent = "잠시만 기다려주세요. 사용자 100명과 댓글 100개를 생성합니다.";
+
+            try {
+                const owner = await ensureActiveUserForBatch();
+                const work = await ensureMyFeedbackTargetWork(owner);
+                const suffix = Date.now().toString().slice(-6);
+                for (let index = 0; index < 100; index += 1) {
+                    const audience = await request(api.users, {
+                        method: "POST",
+                        body: JSON.stringify(batchAudienceProfile(index, suffix)),
+                    });
+                    const [focusArea, body] = batchFeedbackTemplate(index);
+                    await request(api.comments, {
+                        method: "POST",
+                        body: JSON.stringify({
+                            work_id: work.id,
+                            author_id: audience.id,
+                            focus_area: focusArea,
+                            body,
+                            status: "active",
+                        }),
+                    });
+                }
+                state.activeUserId = owner.id;
+                state.selectedWorkId = work.id;
+                state.feedMode = "mine";
+                await loadAll();
+                const refreshedNotice = $("#batchFeedbackNotice");
+                if (refreshedNotice) {
+                    refreshedNotice.textContent = "100명 피드백을 내 작품에 반영했습니다. 통계는 상위 의견 중심으로 갱신됐습니다.";
+                }
+            } catch (error) {
+                notice.textContent = `생성 실패: ${error.message}`;
+                button.disabled = false;
+                button.textContent = "내 작품에 100명 피드백 생성";
+            }
         }
 
         async function submitComment(event) {
@@ -1418,7 +1569,7 @@
         $$(".segment").forEach((button) => {
             button.addEventListener("click", () => {
                 state.feedMode = button.dataset.mode;
-                $$(".segment").forEach((item) => item.classList.toggle("active", item === button));
+                renderSegments();
                 renderFeed();
                 renderDetail();
             });
