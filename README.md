@@ -7,7 +7,7 @@ Python backend MVP scaffold for a semi-anonymous creative feedback platform.
 - Backend API: Django + Django REST framework
 - Database: SQLite for local development, PostgreSQL in production
 - Background jobs: Celery + Redis
-- Mobile client target: SwiftUI iOS app
+- Mobile client target: Flutter for iOS and Android
 
 ## Core product assumptions
 
@@ -21,7 +21,7 @@ Python backend MVP scaffold for a semi-anonymous creative feedback platform.
 1. Install dependencies from `backend/requirements.txt`.
 2. Confirm `.env` contains your local IP in `DJANGO_ALLOWED_HOSTS`.
 3. Run `python manage.py migrate` from `backend`.
-4. Run `python manage.py migrate` from `backend`.
+4. Open the app prototype at `/app/`.
 5. For PC browser testing, run `powershell -ExecutionPolicy Bypass -File scripts\run_local_server.ps1`.
 6. For phone testing on the same Wi-Fi, run `python manage.py runserver 0.0.0.0:8000` from `backend`.
 
@@ -50,6 +50,28 @@ The root screen is a social login entry screen with Google, KakaoTalk, and Naver
 OAuth credentials are configured with `GOOGLE_OAUTH_CLIENT_ID`, `GOOGLE_OAUTH_CLIENT_SECRET`, `KAKAO_OAUTH_CLIENT_ID`, `KAKAO_OAUTH_CLIENT_SECRET`, `NAVER_OAUTH_CLIENT_ID`, and `NAVER_OAUTH_CLIENT_SECRET`.
 The app prototype lives at `/app/` for validating the end-user flow before OAuth credentials are ready.
 The `/ops/` screen is the operations-oriented demo surface for manual API exercise.
+
+## App experience
+
+- Browse works with search and media filters, or open your own works from the bottom navigation.
+- Selecting a work opens a separate detail screen with feedback and audience analysis.
+- Audience analysis switches between age, country, and gender. It distinguishes people from comment counts and labels keyword sentiment as an estimate, not an AI score.
+- Registration currently accepts links. Media without a playable source has a labeled placeholder.
+- Demo user switching and sample generation are under My Loop's expandable demo settings. No sample data is created merely by opening the page.
+- Styles and interaction code are in `backend/apps/demo/static/demo/`.
+
+The UI direction references familiar community navigation and the pattern catalog at [UIbowl](https://uibowl.io/). Individual member-only reference screens were not reproduced.
+
+## UI verification
+
+With Django running on `127.0.0.1:8000` and Microsoft Edge installed:
+
+```powershell
+python -m pip install --target .ui-test-deps playwright
+python scripts/check_app_ui.py
+```
+
+The script captures the real app and tests search, ownership filtering, detail/back navigation, sentiment groups, failed submission recovery, and upload at mobile/desktop widths. Write requests use intercepted fixtures and do not change the local database. Screenshots are saved under `artifacts/ui/` (ignored by Git).
 
 ## OAuth callback URLs
 

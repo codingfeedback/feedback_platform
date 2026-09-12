@@ -17,10 +17,10 @@ class DemoPageTests(TestCase):
         self.assertContains(response, "Feedback Loop")
         self.assertContains(response, "커뮤니티 샘플 채우기")
         self.assertContains(response, "현재 사용자")
-        self.assertContains(response, "demographicInsights")
-        self.assertContains(response, "내 작품에 100명 피드백 생성")
-        self.assertContains(response, "평가 성향 요약")
-        self.assertContains(response, "대표 코멘트")
+        self.assertContains(response, 'id="myWorkList"')
+        self.assertContains(response, 'id="workDetail"')
+        self.assertContains(response, "demo/app.css")
+        self.assertContains(response, "demo/app.js")
 
     def test_ops_page_loads(self):
         response = self.client.get("/ops/")

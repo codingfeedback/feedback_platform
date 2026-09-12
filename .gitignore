@@ -7,3 +7,5 @@ dist/
 build/
 .pytest_cache/
 backend/run_logs/
+.ui-test-deps/
+artifacts/ui/
