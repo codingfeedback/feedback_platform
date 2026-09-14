@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Feedback Loop</title>
     <meta name="theme-color" content="#fbf9f6">
-    <link rel="stylesheet" href="{% static 'demo/app.css' %}">
+    <link rel="stylesheet" href="{% static 'demo/app.css' %}?v={{ asset_versions.css }}">
 </head>
 <body>
     <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -683,6 +683,6 @@
         }
 
     </script>
-    <script src="{% static 'demo/app.js' %}" defer></script>
+    <script src="{% static 'demo/app.js' %}?v={{ asset_versions.js }}" defer></script>
 </body>
 </html>
